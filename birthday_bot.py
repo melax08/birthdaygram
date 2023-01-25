@@ -1,4 +1,3 @@
-import sqlite3
 import sys
 import os
 import datetime as dt
@@ -6,49 +5,12 @@ import datetime as dt
 from dotenv import load_dotenv
 from telegram import Bot
 
+from db_actions import Database
+
 load_dotenv()
 
 TOKEN = os.getenv('TOKEN')
 TELEGRAM_ID = os.getenv('TELEGRAM_ID')
-
-
-def db_actions(func):
-    """Decorator for quick database actions."""
-    def db_processing(*args, **kwargs):
-        """Create db connect, cursor, using it to process some action."""
-        connect = sqlite3.connect('birthdays.db')
-        cursor = connect.cursor()
-        result = func(*args, cursor, **kwargs)
-        connect.commit()
-        connect.close()
-        return result
-    return db_processing
-
-
-@db_actions
-def create_table(cursor) -> None:
-    """Create database and birthday table."""
-    try:
-        cursor.execute("""CREATE TABLE birthdays(
-            full_name VARCHAR(255), 
-            birth_date DATE
-        )""")
-        print('Database was succesfuly created!')
-    except sqlite3.OperationalError as error:
-        print(f'Error! {error}')
-
-
-@db_actions
-def create_new_record(name: str, birthday: str, cursor) -> None:
-    """Create new birthday record."""
-    cursor.execute(
-        f"INSERT INTO birthdays (full_name, birth_date) VALUES ('{name}', '{birthday}');")
-
-
-@db_actions
-def select_today_birthdays(cursor) -> list:
-    """Select today birthdays from database."""
-    return cursor.execute(f"SELECT * FROM birthdays WHERE strftime('%m-%d', birth_date) = strftime('%m-%d',date('now', 'localtime'));").fetchall()
 
 
 def send_message(message) -> None:
@@ -57,9 +19,8 @@ def send_message(message) -> None:
     bot.send_message(TELEGRAM_ID, message)
 
 
-def today_birthdays_message_send() -> None:
+def today_birthdays_message_send(today_birthdays: list) -> None:
     """Send telegram message about today birthdays."""
-    today_birthdays = select_today_birthdays()
     if today_birthdays:
         strings = []
         current_year = dt.datetime.now().year
@@ -77,17 +38,18 @@ def today_birthdays_message_send() -> None:
 
 def main() -> None:
     """Main function."""
+    database = Database()
     if len(sys.argv) > 1:
         if sys.argv[1] == 'create_database':
-            create_table()
+            database.create_table()
         elif sys.argv[1] == 'add':
             name = sys.argv[2]
             birthdate = sys.argv[3]
-            create_new_record(name, birthdate)
+            database.new_record(name, birthdate)
         else:
             print(f'Wrong argument: {sys.argv[1]}')
     else:
-        today_birthdays_message_send()
+        today_birthdays_message_send(database.today_birthdays())
 
 
 if __name__ == '__main__':
