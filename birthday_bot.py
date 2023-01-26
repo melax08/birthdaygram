@@ -13,27 +13,42 @@ TOKEN = os.getenv('TOKEN')
 TELEGRAM_ID = os.getenv('TELEGRAM_ID')
 
 
-def send_message(message) -> None:
-    """Send telegram message about today birthdays."""
+def send_message(message: str) -> None:
+    """Send telegram message."""
     bot = Bot(token=TOKEN)
     bot.send_message(TELEGRAM_ID, message)
+
+
+def birthdate_processing(birthdate: str) -> tuple:
+    """Processes the date of birth from the
+    database and returns a human-readable date and current age."""
+    birthdate = dt.datetime.strptime(birthdate, '%Y-%m-%d')
+    age = dt.datetime.now().year - birthdate.year
+    return f'{birthdate:%d.%m.%Y}', age
 
 
 def today_birthdays_message_send(today_birthdays: list) -> None:
     """Send telegram message about today birthdays."""
     if today_birthdays:
         strings = []
-        current_year = dt.datetime.now().year
         if len(today_birthdays) == 1:
             strings.append('⚡️ Сегодня день рождения у:\n')
         else:
             strings.append('⚡️ Сегодня дни рождения у:\n')
         for name, birthdate in today_birthdays:
-            birthdate = dt.datetime.strptime(birthdate, '%Y-%m-%d')
-            age = current_year - birthdate.year
-            strings.append(f'🎂 {name}, исполнилось: '
-                           f'{age} ({birthdate:%d.%m.%Y})\n')
+            birthdate, age = birthdate_processing(birthdate)
+            strings.append(f'🎂 {name}, исполнилось: {age} ({birthdate})\n')
         send_message(' '.join(strings))
+
+
+def send_all_records(records: list) -> None:
+    """Send a telegram message with all records in the database."""
+    if records:
+        string = ['🗂 Список людей в базе:\n']
+        for name, birthdate in records:
+            birthdate, age = birthdate_processing(birthdate)
+            string.append(f'{name}, возраст: {age}, {birthdate}\n')
+        send_message(''.join(string))
 
 
 def main() -> None:

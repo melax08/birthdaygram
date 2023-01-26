@@ -3,6 +3,7 @@ import os
 
 DB_NAME = 'birthdays.db'
 DB_PATH = os.path.join(os.path.dirname(__file__), DB_NAME)
+TABLE_NAME = 'birthdays'
 
 
 class Database:
@@ -12,17 +13,24 @@ class Database:
 
     def create_table(self) -> None:
         try:
-            self.__cursor.execute("""CREATE TABLE birthdays(full_name VARCHAR(255), birth_date DATE)""")
-            print('Database was succesfuly created!')
+            self.__cursor.execute(f"""CREATE TABLE {TABLE_NAME}(full_name VARCHAR(255), birth_date DATE)""")
+            print('Database was successfully created!')
         except sqlite3.OperationalError as error:
             print(f'Error! {error}')
 
-    def new_record(self, name: str, birthday: str):
-        self.__cursor.execute(f"INSERT INTO birthdays (full_name, birth_date) VALUES ('{name}', '{birthday}');")
+    def new_record(self, name: str, birthday: str) -> None:
+        self.__cursor.execute(f"INSERT INTO {TABLE_NAME} (full_name, birth_date) VALUES ('{name}', '{birthday}');")
         self.__connect.commit()
 
     def today_birthdays(self) -> list:
-        return self.__cursor.execute(f"SELECT * FROM birthdays WHERE strftime('%m-%d', birth_date) = strftime('%m-%d',date('now', 'localtime'));").fetchall()
+        return self.__cursor.execute(f"SELECT * FROM {TABLE_NAME} WHERE strftime('%m-%d', birth_date) = strftime('%m-%d',date('now', 'localtime'));").fetchall()
+
+    def delete(self, name: str) -> None:
+        self.__cursor.execute(f"DELETE FROM {TABLE_NAME} WHERE full_name='{name}'")
+        self.__connect.commit()
+
+    def show_all_records(self) -> list:
+        return self.__cursor.execute(f"SELECT * FROM {TABLE_NAME}").fetchall()
 
     def __del__(self):
         self.__connect.close()
