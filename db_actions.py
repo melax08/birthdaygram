@@ -1,11 +1,13 @@
 import sqlite3
+import os
 
-DATABASE_NAME = 'birthdays.db'
+DB_NAME = 'birthdays.db'
+DB_PATH = os.path.join(os.path.dirname(__file__), DB_NAME)
 
 
 class Database:
     def __init__(self):
-        self.__connect = sqlite3.connect(DATABASE_NAME)
+        self.__connect = sqlite3.connect(DB_PATH)
         self.__cursor = self.__connect.cursor()
 
     def create_table(self) -> None:
