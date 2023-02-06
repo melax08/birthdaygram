@@ -41,14 +41,16 @@ def today_birthdays_message_send(today_birthdays: list) -> None:
         send_message(' '.join(strings))
 
 
-def send_all_records(records: list) -> None:
-    """Send a telegram message with all records in the database."""
+def all_records(records: list) -> str:
+    """Create a message text with all records in database."""
     if records:
-        string = ['🗂 Список людей в базе:\n']
+        message = ['🗂 Список людей в базе:\n']
         for name, birthdate in records:
             birthdate, age = birthdate_processing(birthdate)
-            string.append(f'{name}, возраст: {age}, {birthdate}\n')
-        send_message(''.join(string))
+            message.append(f'{name}, возраст: {age}, {birthdate}\n')
+        return ''.join(message)
+    else:
+        return 'В базе данных нет записей!'
 
 
 def main() -> None:

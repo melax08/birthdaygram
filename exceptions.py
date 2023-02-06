@@ -1,0 +1,2 @@
+class BirthDateError(Exception):
+    pass
