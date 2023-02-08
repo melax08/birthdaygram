@@ -2,13 +2,13 @@ import logging
 import os
 
 from dotenv import load_dotenv
-from telegram import Update, ReplyKeyboardMarkup
+from telegram import Update
 from telegram.ext import (Application, CommandHandler, ContextTypes,
                           MessageHandler, filters,)
 
 from db_actions import Database
-from birthday_bot import all_records
-from tg_handlers import add_conv_handler, MAIN_BUTTONS, YES_NO_BUTTONS
+from birthday_bot import select
+from tg_handlers import add_conv_handler, delete_conv_handler, MAIN_BUTTONS
 
 
 load_dotenv()
@@ -39,8 +39,13 @@ async def show_all_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     """Send a message with all records in database."""
     db = Database()
     records = db.show_all_records()
-    message = all_records(records)
-    await update.message.reply_text(message)
+    persons = select(records)
+    if persons:
+        message = ['🗂 Список людей в базе:\n']
+        message.extend(persons)
+    else:
+        message = ['В базе данных нет записей!']
+    await update.message.reply_text(''.join(message))
 
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -53,6 +58,7 @@ def main() -> None:
     """Start the bot."""
     application = Application.builder().token(TOKEN).build()
     application.add_handler(add_conv_handler)
+    application.add_handler(delete_conv_handler)
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("show_all", show_all_command))

@@ -29,6 +29,9 @@ class Database:
         self.__cursor.execute(f"DELETE FROM {TABLE_NAME} WHERE full_name='{name}'")
         self.__connect.commit()
 
+    def select(self, name: str):
+        return self.__cursor.execute(f"SELECT * FROM {TABLE_NAME} WHERE full_name='{name}';").fetchall()
+
     def show_all_records(self) -> list:
         return self.__cursor.execute(f"SELECT * FROM {TABLE_NAME}").fetchall()
 

@@ -41,16 +41,25 @@ def today_birthdays_message_send(today_birthdays: list) -> None:
         send_message(' '.join(strings))
 
 
-def all_records(records: list) -> str:
-    """Create a message text with all records in database."""
-    if records:
-        message = ['🗂 Список людей в базе:\n']
-        for name, birthdate in records:
-            birthdate, age = birthdate_processing(birthdate)
-            message.append(f'{name}, возраст: {age}, {birthdate}\n')
-        return ''.join(message)
-    else:
-        return 'В базе данных нет записей!'
+# def all_records(records: list) -> str:
+#     """Create a message text with all records in database."""
+#     if records:
+#         message = ['🗂 Список людей в базе:\n']
+#         for name, birthdate in records:
+#             birthdate, age = birthdate_processing(birthdate)
+#             message.append(f'{name}, возраст: {age}, {birthdate}\n')
+#         return ''.join(message)
+#     else:
+#         return 'В базе данных нет записей!'
+
+
+def select(data: list) -> list:
+    """Create message with information about selected person(s)."""
+    message = []
+    for name, birthdate in data:
+        birthdate, age = birthdate_processing(birthdate)
+        message.append(f'{name}, возраст: {age}, {birthdate}\n')
+    return message
 
 
 def main() -> None:
