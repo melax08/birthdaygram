@@ -35,5 +35,8 @@ class Database:
     def show_all_records(self) -> list:
         return self.__cursor.execute(f"SELECT * FROM {TABLE_NAME}").fetchall()
 
+    def count_all(self) -> int:
+        return self.__cursor.execute(f'SELECT COUNT(*) FROM {TABLE_NAME};').fetchone()[0]
+
     def __del__(self):
         self.__connect.close()

@@ -3,7 +3,6 @@ from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
 
 __all__ = ['MAIN_BUTTONS', 'YES_NO_BUTTONS']
-
 MAIN_BUTTONS = ReplyKeyboardMarkup([
         ['/add', '/delete', '/show_all']
     ], resize_keyboard=True, input_field_placeholder='Выберите действие:')

@@ -41,7 +41,8 @@ async def show_all_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     records = db.show_all_records()
     persons = select(records)
     if persons:
-        message = ['🗂 Список людей в базе:\n']
+        count = db.count_all()
+        message = [f'🗂 Список людей в базе ({count}):\n']
         message.extend(persons)
     else:
         message = ['В базе данных нет записей!']
