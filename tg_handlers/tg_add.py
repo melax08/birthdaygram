@@ -2,7 +2,7 @@ from telegram import Update
 from telegram.ext import (CommandHandler, ContextTypes, MessageHandler,
                           filters, ConversationHandler)
 
-from db_actions import Database
+from alchemy_actions import UserTable
 from exceptions import BirthDateError, FullNameError
 from validators import birth_date_validator, full_name_validator
 from .misc import YES_NO_BUTTONS, MAIN_BUTTONS, cancel, clear_data
@@ -52,9 +52,11 @@ async def _confirmation(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
                                         'сначала. Напишите имя человека.')
         return FULL_NAME
     elif answer.lower() == 'да':
-        db = Database()
-        db.new_record(context.user_data.get("full_name"),
-                      context.user_data.get("birth_date"))
+        user_table = UserTable(update.effective_chat.id)
+        user_table.add_person(
+            context.user_data.get("full_name"),
+            context.user_data.get("birth_date")
+        )
         clear_data(context.user_data)
         await update.message.reply_text('✅ Успешно!',
                                         reply_markup=MAIN_BUTTONS)

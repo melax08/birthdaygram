@@ -1,3 +1,9 @@
+"""
+Old class for local raw SQL use.
+Before use, you need to implement protection
+against SQL injection on user input.
+"""
+
 import sqlite3
 import os
 

@@ -1,16 +1,9 @@
-import sys
-import os
 import datetime as dt
+from typing import Optional
 
-from dotenv import load_dotenv
 from telegram import Bot
 
-from db_actions import Database
-
-load_dotenv()
-
-TOKEN = os.getenv('TOKEN')
-TELEGRAM_ID = os.getenv('TELEGRAM_ID')
+from constants import TOKEN, TELEGRAM_ID
 
 
 def send_message(message: str) -> None:
@@ -19,52 +12,29 @@ def send_message(message: str) -> None:
     bot.send_message(TELEGRAM_ID, message)
 
 
-def birthdate_processing(birthdate: str) -> tuple:
+def birthdate_processing(birthdate: dt) -> tuple:
     """Processes the date of birth from the
     database and returns a human-readable date and current age."""
-    birthdate = dt.datetime.strptime(birthdate, '%Y-%m-%d')
     age = dt.datetime.now().year - birthdate.year
     return f'{birthdate:%d.%m.%Y}', age
 
 
-def today_birthdays_message_send(today_birthdays: list) -> None:
-    """Send telegram message about today birthdays."""
-    if today_birthdays:
-        strings = []
-        if len(today_birthdays) == 1:
-            strings.append('⚡️ Сегодня день рождения у:\n')
-        else:
-            strings.append('⚡️ Сегодня дни рождения у:\n')
-        for name, birthdate in today_birthdays:
-            birthdate, age = birthdate_processing(birthdate)
-            strings.append(f'🎂 {name}, исполнилось: {age} ({birthdate})\n')
-        send_message(' '.join(strings))
-
-
-def select(data: list) -> list:
-    """Create message with information about selected person(s)."""
-    message = []
-    for name, birthdate in data:
-        birthdate, age = birthdate_processing(birthdate)
-        message.append(f'{name}, возраст: {age}, {birthdate}\n')
+def check_today_birthdays(records: list) -> Optional[list]:
+    """Check today birthdays query, return message if any birthday."""
+    message = None
+    if len(records) > 0:
+        message = ['⚡️ Сегодня день рождения у:']
+        for record in records:
+            birthdate, age = birthdate_processing(record.birth_date)
+            message.append(
+                f'🎂 {record.full_name}, исполнилось: {age} ({birthdate})')
     return message
 
 
-def main() -> None:
-    """Main function."""
-    database = Database()
-    if len(sys.argv) > 1:
-        if sys.argv[1] == 'create_database':
-            database.create_table()
-        elif sys.argv[1] == 'add':
-            name = sys.argv[2]
-            birthdate = sys.argv[3]
-            database.new_record(name, birthdate)
-        else:
-            print(f'Wrong argument: {sys.argv[1]}')
-    else:
-        today_birthdays_message_send(database.today_birthdays())
-
-
-if __name__ == '__main__':
-    main()
+def create_persons_info_list(data: list) -> list:
+    """Create message with information about selected person(s)."""
+    message = []
+    for record in data:
+        birthdate, age = birthdate_processing(record.birth_date)
+        message.append(f'{record.full_name}, возраст: {age}, {birthdate}')
+    return message

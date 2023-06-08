@@ -2,8 +2,7 @@ from telegram import Update
 from telegram.ext import (CommandHandler, ContextTypes, MessageHandler,
                           filters, ConversationHandler)
 
-from db_actions import Database
-from birthday_bot import select
+from alchemy_actions import UserTable
 from .misc import YES_NO_BUTTONS, MAIN_BUTTONS, cancel, clear_data
 
 FULL_NAME, CONFIRMATION = range(2)
@@ -18,16 +17,15 @@ async def delete_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
 async def _full_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     full_name = update.message.text
-    db = Database()
-    person = db.select(full_name)
-    person = select(person)
+    user_table = UserTable(update.effective_chat.id)
+    person = user_table.select_person(full_name)
     if not person:
         await update.message.reply_text('Указанное имя не найдено в базе. '
                                         'Введите новое имя, или /cancel')
         return FULL_NAME
     else:
-        context.user_data["full_name"] = full_name
-        await update.message.reply_text(f'Произвести удаление {full_name}?',
+        context.user_data["person_to_delete"] = person
+        await update.message.reply_text(f'Произвести удаление {person.full_name}, дата рождения: {person.birth_date:%d.%m.%Y}?',
                                         reply_markup=YES_NO_BUTTONS)
     return CONFIRMATION
 
@@ -40,8 +38,8 @@ async def _confirmation(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
                                         reply_markup=MAIN_BUTTONS)
         return ConversationHandler.END
     elif answer.lower() == 'да':
-        db = Database()
-        db.delete(context.user_data.get("full_name"))
+        user_table = UserTable(update.effective_chat.id)
+        user_table.delete_person(context.user_data.get("person_to_delete"))
         clear_data(context.user_data)
         await update.message.reply_text('✅ Успешно!',
                                         reply_markup=MAIN_BUTTONS)

@@ -13,6 +13,7 @@ def clear_data(user_data: dict) -> None:
     """Clear add data information."""
     user_data.pop('full_name', None)
     user_data.pop('birth_date', None)
+    user_data.pop('person_to_delete', None)
 
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
