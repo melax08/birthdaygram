@@ -13,9 +13,17 @@ async def send_message(message: str, chat_id: str) -> None:
 
 
 def birthdate_processing(birthdate: dt) -> tuple:
-    """Processes the date of birth from the
-    database and returns a human-readable date and current age."""
-    age = dt.datetime.now().year - birthdate.year
+    """Processes the date of birth from the database
+    and returns a human-readable date and current age."""
+    now = dt.datetime.now()
+    age = now.year - birthdate.year
+    if birthdate.month == now.month:
+        if birthdate.day > now.day:
+            age -= 1
+    elif birthdate.month > now.month:
+        age -= 1
+
+    # age = dt.datetime.now().year - birthdate.year
     return f'{birthdate:%d.%m.%Y}', age
 
 
