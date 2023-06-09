@@ -22,8 +22,6 @@ def birthdate_processing(birthdate: dt) -> tuple:
             age -= 1
     elif birthdate.month > now.month:
         age -= 1
-
-    # age = dt.datetime.now().year - birthdate.year
     return f'{birthdate:%d.%m.%Y}', age
 
 
