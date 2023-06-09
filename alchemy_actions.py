@@ -1,6 +1,6 @@
 import datetime as dt
 
-from sqlalchemy import create_engine, Column, Integer, String, Date
+from sqlalchemy import create_engine, Column, Integer, String, Date, inspect
 from sqlalchemy.orm import Session, declared_attr, declarative_base
 from sqlalchemy.sql.expression import extract
 
@@ -35,9 +35,9 @@ class UserTable:
         class User(Base):
             chat_id = self.chat_id
 
-        engine = create_engine(f'sqlite:///{SQLITE_DB_NAME}', echo=True)
-        Base.metadata.create_all(engine)
-        session = Session(engine)
+        self.engine = create_engine(f'sqlite:///{SQLITE_DB_NAME}', echo=True)
+        Base.metadata.create_all(self.engine)
+        session = Session(self.engine)
         return session, User
 
     def show_all(self):
@@ -62,8 +62,24 @@ class UserTable:
             extract("month", self.user_table.birth_date == today.month),
             extract("day", self.user_table.birth_date) == today.day).all()
 
+    def select_tables(self):
+        insp = inspect(self.engine)
+        return insp.get_table_names()
+
     def __del__(self):
         self.session.close()
+
+
+class CheckTable:
+    def __init__(self):
+        self.__connect()
+
+    def __connect(self):
+        self.engine = create_engine(f'sqlite:///{SQLITE_DB_NAME}', echo=True)
+
+    def select_tables(self):
+        insp = inspect(self.engine)
+        return insp.get_table_names()
 
 
 if __name__ == "__main__":

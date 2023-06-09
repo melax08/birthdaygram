@@ -1,7 +1,5 @@
 import logging
-import os
 
-from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import (Application, CommandHandler, ContextTypes,
                           MessageHandler, filters,)
@@ -9,12 +7,7 @@ from telegram.ext import (Application, CommandHandler, ContextTypes,
 from alchemy_actions import UserTable
 from birthday_bot import create_persons_info_list, check_today_birthdays
 from tg_handlers import add_conv_handler, delete_conv_handler, MAIN_BUTTONS
-
-
-
-load_dotenv()
-
-TOKEN = os.getenv('TOKEN')
+from constants import TOKEN
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -62,7 +55,6 @@ async def today_birthdays_command(update: Update, context: ContextTypes.DEFAULT_
     if message is None:
         message = ['Сегодня ни у кого нет дня рождения :(']
     await update.message.reply_text('\n'.join(message))
-
 
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:

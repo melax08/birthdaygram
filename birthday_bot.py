@@ -3,13 +3,13 @@ from typing import Optional
 
 from telegram import Bot
 
-from constants import TOKEN, TELEGRAM_ID
+from constants import TOKEN
 
 
-def send_message(message: str) -> None:
+async def send_message(message: str, chat_id: str) -> None:
     """Send telegram message."""
     bot = Bot(token=TOKEN)
-    bot.send_message(TELEGRAM_ID, message)
+    await bot.send_message(chat_id, message)
 
 
 def birthdate_processing(birthdate: dt) -> tuple:
