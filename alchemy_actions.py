@@ -1,20 +1,20 @@
 import os
 import datetime as dt
 
-from sqlalchemy import create_engine, Column, Integer, String, Date, inspect
+from sqlalchemy import create_engine, Column, Integer, String, Date, inspect, func
 from sqlalchemy.orm import Session, declared_attr, declarative_base
 from sqlalchemy.sql.expression import extract
 
 from constants import FULL_NAME_MAX_LEN, SQLITE_DB_NAME
 
 
-if os.getenv('LOCAL', default=0):
+if int(os.getenv('LOCAL', default=0)):
     sql_settings = f'sqlite:///{SQLITE_DB_NAME}'
 else:
     db_user = os.getenv("POSTGRES_USER", default='birthdaygram')
     db_password = os.getenv("POSTGRES_PASSWORD", default='123456')
     db_host = os.getenv("DB_HOST", default='db')
-    db_port = os.getenv("DB_PORT", default=5432)
+    db_port = os.getenv("DB_PORT", default='5432')
     db_name = os.getenv("DB_NAME", default='birthdaygram')
     sql_settings = (
         f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
@@ -81,9 +81,12 @@ class UserTable:
     def today_birthdays(self):
         """Makes DB query to get all user records with today birthdays."""
         today = dt.date.today()
+        # return self.session.query(self.user_table).filter(
+        #     extract("month", self.user_table.birth_date == today.month),
+        #     extract("day", self.user_table.birth_date) == today.day).all()
         return self.session.query(self.user_table).filter(
-            extract("month", self.user_table.birth_date == today.month),
-            extract("day", self.user_table.birth_date) == today.day).all()
+            func.cast(extract("month", self.user_table.birth_date), Integer) == today.month,
+            func.cast(extract("day", self.user_table.birth_date), Integer) == today.day).all()
 
     def __del__(self):
         self.session.close()

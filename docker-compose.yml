@@ -3,6 +3,7 @@ version: '3.8'
 services:
   birthdaygram_db:
     image: postgres:13.0-alpine
+    restart: always
     volumes:
       - birthdaygram_database:/var/lib/postgresql/data/
     env_file:
