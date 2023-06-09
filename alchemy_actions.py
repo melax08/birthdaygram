@@ -10,6 +10,7 @@ from constants import FULL_NAME_MAX_LEN, SQLITE_DB_NAME
 
 if int(os.getenv('LOCAL', default=0)):
     sql_settings = f'sqlite:///{SQLITE_DB_NAME}'
+    ECHO = True
 else:
     db_user = os.getenv("POSTGRES_USER", default='birthdaygram')
     db_password = os.getenv("POSTGRES_PASSWORD", default='123456')
@@ -19,6 +20,7 @@ else:
     sql_settings = (
         f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
     )
+    ECHO = False
 
 
 class PreBase:
@@ -53,7 +55,7 @@ class UserTable:
         class User(Base):
             chat_id = self.chat_id
 
-        self.engine = create_engine(sql_settings, echo=False)
+        self.engine = create_engine(sql_settings, echo=ECHO)
         Base.metadata.create_all(self.engine)
         session = Session(self.engine)
         return session, User
@@ -98,7 +100,7 @@ class CheckTable:
         self.__connect()
 
     def __connect(self):
-        self.engine = create_engine(sql_settings, echo=False)
+        self.engine = create_engine(sql_settings, echo=ECHO)
 
     def select_tables(self):
         """Makes DB query to get all DB tables names."""

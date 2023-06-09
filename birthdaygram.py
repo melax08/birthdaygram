@@ -19,18 +19,24 @@ def _get_user_info(update: Update) -> str:
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Send a message when the command /start is issued."""
+    """Send a message when the command /start or /help is issued."""
     user = update.effective_user
     logging.info(f'Someone starts bot: {_get_user_info(update)}')
     await update.message.reply_html(
-        rf"Hi {user.mention_html()}!",
+        f"👋 Привет {user.mention_html()}!\n\n"
+        f"📌 Команды бота:\n"
+        f"Добавить человека в список: /add\n"
+        f"Удалить человека из списка: /delete\n"
+        f"Посмотреть список дней рождений: /show_all\n\n"
+        f"Когда у кого-то из списка будет день рождения, "
+        f"я сообщу тебе об этом.",
         reply_markup=MAIN_BUTTONS
     )
 
 
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Send a message when the command /help is issued."""
-    await update.message.reply_text("There is some help info")
+# async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+#     """Send a message when the command /help is issued."""
+#     await update.message.reply_text("There is some help info")
 
 
 async def show_all_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -70,8 +76,12 @@ async def today_birthdays_command(update: Update, context: ContextTypes.DEFAULT_
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Echo the user message."""
     # await update.message.reply_text(update.message.text)
-    await update.message.reply_text(context.user_data,
-                                    reply_markup=MAIN_BUTTONS)
+    # await update.message.reply_text(context.user_data,
+    #                                 reply_markup=MAIN_BUTTONS)
+    await update.message.reply_text(
+        "Я знаю только команды и не умею общаться "
+        ":( Узнай команды в /help и я смогу тебе помочь.",
+        reply_markup=MAIN_BUTTONS)
 
 
 def main() -> None:
@@ -79,8 +89,7 @@ def main() -> None:
     application = Application.builder().token(TOKEN).build()
     application.add_handler(add_conv_handler)
     application.add_handler(delete_conv_handler)
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("help", help_command))
+    application.add_handler(CommandHandler(["start", "help"], start))
     application.add_handler(CommandHandler("show_all", show_all_command))
     application.add_handler(CommandHandler("today", today_birthdays_command))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))

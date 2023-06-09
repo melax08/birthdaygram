@@ -11,7 +11,7 @@ FULL_NAME, CONFIRMATION = range(2)
 
 
 async def delete_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.message.reply_text('Напишите полное имя человека, которого '
+    await update.message.reply_text('Напишите полное имя человека которого '
                                     'хотите удалить из списка. '
                                     'Для отмены /cancel')
     return FULL_NAME
