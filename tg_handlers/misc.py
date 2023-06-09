@@ -4,7 +4,7 @@ from telegram.ext import ContextTypes, ConversationHandler
 
 __all__ = ['MAIN_BUTTONS', 'YES_NO_BUTTONS']
 MAIN_BUTTONS = ReplyKeyboardMarkup([
-        ['/add', '/delete', '/show_all']
+        ['/add', '/delete', '/show_all', '/today']
     ], resize_keyboard=True, input_field_placeholder='Выберите действие:')
 YES_NO_BUTTONS = ReplyKeyboardMarkup([['Да', 'Нет']], input_field_placeholder='Все корректно?')
 

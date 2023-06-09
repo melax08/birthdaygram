@@ -1,3 +1,5 @@
+import logging
+
 from telegram import Update
 from telegram.ext import (CommandHandler, ContextTypes, MessageHandler,
                           filters, ConversationHandler)
@@ -40,6 +42,10 @@ async def _confirmation(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     elif answer.lower() == 'да':
         user_table = UserTable(update.effective_chat.id)
         user_table.delete_person(context.user_data.get("person_to_delete"))
+        logging.info(
+            f'User {update.effective_user.id} '
+            f'delete {context.user_data.get("person_to_delete")}'
+        )
         clear_data(context.user_data)
         await update.message.reply_text('✅ Успешно!',
                                         reply_markup=MAIN_BUTTONS)

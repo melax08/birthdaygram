@@ -8,6 +8,8 @@ from constants import FULL_NAME_MAX_LEN, SQLITE_DB_NAME
 
 
 class PreBase:
+    """Base class for user model. Name of the table is user telegram id,
+    every user has its own table."""
     chat_id = 'default_table'
 
     @declared_attr
@@ -27,57 +29,62 @@ Base = declarative_base(cls=PreBase)
 
 
 class UserTable:
+    """Class for handle user table DB queries."""
     def __init__(self, chat_id):
         self.chat_id = chat_id
         self.session, self.user_table = self.__get_session_and_table()
 
     def __get_session_and_table(self):
+        """Creates DB session and current user model."""
         class User(Base):
             chat_id = self.chat_id
 
-        self.engine = create_engine(f'sqlite:///{SQLITE_DB_NAME}', echo=True)
+        self.engine = create_engine(f'sqlite:///{SQLITE_DB_NAME}', echo=False)
         Base.metadata.create_all(self.engine)
         session = Session(self.engine)
         return session, User
 
     def show_all(self):
+        """Makes DB query to get all user records in table."""
         return self.session.query(self.user_table)
 
     def add_person(self, name: str, birthdate: dt) -> None:
+        """Makes DB query to add new record to user table."""
         new_person = self.user_table(full_name=name, birth_date=birthdate)
         self.session.add(new_person)
         self.session.commit()
 
     def select_person(self, name):
+        """Selects record from DB with specified full_name."""
         return self.session.query(self.user_table).filter(
             self.user_table.full_name == name).first()
 
     def delete_person(self, person):
+        """Deletes record from DB with specified person."""
         self.session.delete(person)
         self.session.commit()
 
     def today_birthdays(self):
+        """Makes DB query to get all user records with today birthdays."""
         today = dt.date.today()
         return self.session.query(self.user_table).filter(
             extract("month", self.user_table.birth_date == today.month),
             extract("day", self.user_table.birth_date) == today.day).all()
-
-    def select_tables(self):
-        insp = inspect(self.engine)
-        return insp.get_table_names()
 
     def __del__(self):
         self.session.close()
 
 
 class CheckTable:
+    """Manages infrastructure DB tasks."""
     def __init__(self):
         self.__connect()
 
     def __connect(self):
-        self.engine = create_engine(f'sqlite:///{SQLITE_DB_NAME}', echo=True)
+        self.engine = create_engine(f'sqlite:///{SQLITE_DB_NAME}', echo=False)
 
     def select_tables(self):
+        """Makes DB query to get all DB tables names."""
         insp = inspect(self.engine)
         return insp.get_table_names()
 

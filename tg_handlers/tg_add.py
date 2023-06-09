@@ -1,3 +1,5 @@
+import logging
+
 from telegram import Update
 from telegram.ext import (CommandHandler, ContextTypes, MessageHandler,
                           filters, ConversationHandler)
@@ -57,6 +59,7 @@ async def _confirmation(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
             context.user_data.get("full_name"),
             context.user_data.get("birth_date")
         )
+        logging.info(f'User {update.effective_user.id} add {context.user_data.get("full_name")} {context.user_data.get("birth_date")}')
         clear_data(context.user_data)
         await update.message.reply_text('✅ Успешно!',
                                         reply_markup=MAIN_BUTTONS)

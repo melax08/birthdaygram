@@ -8,16 +8,20 @@ from alchemy_actions import UserTable
 from birthday_bot import create_persons_info_list, check_today_birthdays
 from tg_handlers import add_conv_handler, delete_conv_handler, MAIN_BUTTONS
 from constants import TOKEN
+from configs import configure_logging
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-logger = logging.getLogger(__name__)
+
+def _get_user_info(update: Update) -> str:
+    """Collects information about telegram user and makes string."""
+    info = update.message
+    return (f'{info.chat.username}, {info.chat.first_name} '
+            f'{info.chat.last_name}, {update.effective_user.id}')
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
+    logging.info(f'Someone starts bot: {_get_user_info(update)}')
     await update.message.reply_html(
         rf"Hi {user.mention_html()}!",
         reply_markup=MAIN_BUTTONS
@@ -43,24 +47,31 @@ async def show_all_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     else:
         message = ['В базе данных нет записей! '
                    'Может добавите кого-нибудь? /add']
-
-    await update.message.reply_text('\n'.join(message))
+    logging.info(f'Send message about all records '
+                 f'to {_get_user_info(update)}. Message: {message}')
+    await update.message.reply_text('\n'.join(message),
+                                    reply_markup=MAIN_BUTTONS)
 
 
 async def today_birthdays_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Sends a message with today birthdays."""
     chat_id = update.effective_chat.id
     user_table = UserTable(chat_id)
     records = user_table.today_birthdays()
     message = check_today_birthdays(records)
     if message is None:
         message = ['Сегодня ни у кого нет дня рождения :(']
-    await update.message.reply_text('\n'.join(message))
+    logging.info(f'Send message about today birthdays '
+                 f'to {_get_user_info(update)}. Message: {message}')
+    await update.message.reply_text('\n'.join(message),
+                                    reply_markup=MAIN_BUTTONS)
 
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Echo the user message."""
     # await update.message.reply_text(update.message.text)
-    await update.message.reply_text(context.user_data)
+    await update.message.reply_text(context.user_data,
+                                    reply_markup=MAIN_BUTTONS)
 
 
 def main() -> None:
@@ -77,4 +88,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    configure_logging('birthdaygram.log')
     main()
