@@ -12,6 +12,13 @@ def birth_date_validator(birth: str) -> dt:
     except ValueError:
         raise BirthDateError(
             '❗ Дата рождения указана некорректно! Укажите заново.')
+    now = dt.datetime.now()
+    if ((birth_date.year > now.year)
+            or (birth_date.year == now.year and birth_date.month > now.month)
+            or (birth_date.year == now.year and birth_date.month == now.month
+                and birth_date.day > now.day)):
+        raise BirthDateError('❗ Вы указали дату еще нерожденного человека! '
+                             'Укажите корректную дату.')
     return birth_date
 
 

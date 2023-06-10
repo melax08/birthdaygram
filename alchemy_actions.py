@@ -1,7 +1,8 @@
 import os
 import datetime as dt
 
-from sqlalchemy import create_engine, Column, Integer, String, Date, inspect, func
+from sqlalchemy import (create_engine, Column, Integer, String, Date, inspect,
+                        func)
 from sqlalchemy.orm import Session, declared_attr, declarative_base
 from sqlalchemy.sql.expression import extract
 
@@ -62,7 +63,11 @@ class UserTable:
 
     def show_all(self):
         """Makes DB query to get all user records in table."""
-        return self.session.query(self.user_table)
+        return self.session.query(
+            self.user_table).order_by(
+            extract("month", self.user_table.birth_date),
+            extract("day", self.user_table.birth_date)
+        )
 
     def add_person(self, name: str, birthdate: dt) -> None:
         """Makes DB query to add new record to user table."""
@@ -83,12 +88,12 @@ class UserTable:
     def today_birthdays(self):
         """Makes DB query to get all user records with today birthdays."""
         today = dt.date.today()
-        # return self.session.query(self.user_table).filter(
-        #     extract("month", self.user_table.birth_date == today.month),
-        #     extract("day", self.user_table.birth_date) == today.day).all()
         return self.session.query(self.user_table).filter(
-            func.cast(extract("month", self.user_table.birth_date), Integer) == today.month,
-            func.cast(extract("day", self.user_table.birth_date), Integer) == today.day).all()
+            func.cast(extract("month", self.user_table.birth_date), Integer)
+            == today.month,
+            func.cast(extract("day", self.user_table.birth_date), Integer)
+            == today.day
+        ).all()
 
     def __del__(self):
         self.session.close()

@@ -5,8 +5,8 @@ import asyncio
 import logging
 
 from alchemy_actions import CheckTable, UserTable
-from birthday_bot import check_today_birthdays, send_message
-from configs import configure_cron_logging, configure_logging
+from utils import check_today_birthdays, send_message
+from configs import configure_logging
 
 
 def get_tables() -> list:

@@ -5,7 +5,7 @@ from telegram.ext import (Application, CommandHandler, ContextTypes,
                           MessageHandler, filters,)
 
 from alchemy_actions import UserTable
-from birthday_bot import create_persons_info_list, check_today_birthdays
+from utils import create_persons_info_list, check_today_birthdays
 from tg_handlers import add_conv_handler, delete_conv_handler, MAIN_BUTTONS
 from constants import TOKEN
 from configs import configure_logging
@@ -24,10 +24,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     logging.info(f'Someone starts bot: {_get_user_info(update)}')
     await update.message.reply_html(
         f"👋 Привет {user.mention_html()}!\n\n"
-        f"📌 Команды бота:\n"
-        f"Добавить человека в список: /add\n"
-        f"Удалить человека из списка: /delete\n"
-        f"Посмотреть список дней рождений: /show_all\n\n"
+        f"<b>Команды бота</b>\n"
+        f"/add - добавить человека в список\n"
+        f"/delete - удалить человека из списка\n"
+        f"/show_all - посмотреть список дней рождений\n\n"
         f"Когда у кого-то из списка будет день рождения, "
         f"я сообщу тебе об этом.",
         reply_markup=MAIN_BUTTONS
@@ -39,7 +39,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 #     await update.message.reply_text("There is some help info")
 
 
-async def show_all_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def show_all_command(
+        update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message with all records in database."""
     chat_id = update.effective_chat.id
     user_table = UserTable(chat_id)
@@ -59,7 +60,8 @@ async def show_all_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -
                                     reply_markup=MAIN_BUTTONS)
 
 
-async def today_birthdays_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def today_birthdays_command(
+        update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends a message with today birthdays."""
     chat_id = update.effective_chat.id
     user_table = UserTable(chat_id)
@@ -92,7 +94,8 @@ def main() -> None:
     application.add_handler(CommandHandler(["start", "help"], start))
     application.add_handler(CommandHandler("show_all", show_all_command))
     application.add_handler(CommandHandler("today", today_birthdays_command))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+    application.add_handler(MessageHandler(
+        filters.TEXT & ~filters.COMMAND, echo))
     application.run_polling()
 
 

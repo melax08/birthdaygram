@@ -6,7 +6,9 @@ __all__ = ['MAIN_BUTTONS', 'YES_NO_BUTTONS']
 MAIN_BUTTONS = ReplyKeyboardMarkup([
         ['/add', '/delete', '/show_all', '/today']
     ], resize_keyboard=True, input_field_placeholder='Выберите действие:')
-YES_NO_BUTTONS = ReplyKeyboardMarkup([['Да', 'Нет']], input_field_placeholder='Все корректно?')
+YES_NO_BUTTONS = ReplyKeyboardMarkup([['Да', 'Нет']],
+                                     resize_keyboard=True,
+                                     input_field_placeholder='Все корректно?')
 
 
 def clear_data(user_data: dict) -> None:
