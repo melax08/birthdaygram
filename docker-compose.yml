@@ -7,7 +7,7 @@ services:
     volumes:
       - birthdaygram_database:/var/lib/postgresql/data/
     env_file:
-      - ./.env
+      - src/.env
     environment:
       - TZ=Europe/Moscow
   birthdaygram:
@@ -18,7 +18,7 @@ services:
     depends_on:
       - birthdaygram_db
     env_file:
-      - ./.env
+      - src/.env
     environment:
       - TZ=Europe/Moscow
 

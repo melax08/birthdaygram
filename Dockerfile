@@ -5,8 +5,7 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
-COPY requirements.txt *.py .env ./
-COPY tg_handlers ./tg_handlers
+COPY requirements.txt src ./
 
 RUN pip3 install --upgrade pip
 RUN pip3 install -r  /app/requirements.txt --no-cache-dir
