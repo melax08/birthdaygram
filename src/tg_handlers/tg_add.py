@@ -7,7 +7,7 @@ from telegram.ext import (CommandHandler, ContextTypes, MessageHandler,
 from alchemy_actions import UserTable
 from exceptions import BirthDateError, FullNameError
 from validators import birth_date_validator, full_name_validator
-from .misc import YES_NO_BUTTONS, MAIN_BUTTONS, cancel
+from .misc import YES_NO_BUTTONS, MAIN_BUTTONS, cancel, ADD_BTN
 
 FULL_NAME, BIRTHDATE, CONFIRMATION = range(3)
 
@@ -79,7 +79,9 @@ async def _confirmation(
 
 
 add_conv_handler = ConversationHandler(
-    entry_points=[CommandHandler("add", add_command)],
+    # entry_points=[CommandHandler("add", add_command)],
+    entry_points=[MessageHandler(
+        filters.Regex(ADD_BTN) | filters.Regex('/add'), add_command)],
     states={
         FULL_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND,
                                    _full_name)],

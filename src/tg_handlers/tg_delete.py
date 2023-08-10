@@ -5,7 +5,7 @@ from telegram.ext import (CommandHandler, ContextTypes, MessageHandler,
                           filters, ConversationHandler)
 
 from alchemy_actions import UserTable
-from .misc import YES_NO_BUTTONS, MAIN_BUTTONS, cancel
+from .misc import YES_NO_BUTTONS, MAIN_BUTTONS, cancel, DELETE_BTN
 
 FULL_NAME, CONFIRMATION = range(2)
 
@@ -63,7 +63,9 @@ async def _confirmation(
 
 
 delete_conv_handler = ConversationHandler(
-    entry_points=[CommandHandler("delete", delete_command)],
+    entry_points=[MessageHandler(
+        filters.Regex(DELETE_BTN) | filters.Regex('/delete'), delete_command)
+    ],
     states={
         FULL_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND,
                                    _full_name)],

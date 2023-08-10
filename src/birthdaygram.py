@@ -11,17 +11,27 @@ from utils import (
     get_next_interval_birthdays_message,
     get_user_info
 )
-from tg_handlers import add_conv_handler, delete_conv_handler, MAIN_BUTTONS
+from tg_handlers import (
+    add_conv_handler,
+    delete_conv_handler,
+    MAIN_BUTTONS,
+    ALL_BTN,
+    TODAY_BTN,
+    WEEK_BTN,
+    MONTH_BTN,
+    HELP_BTN
+)
 from constants import TOKEN, BIRTHDAYGRAM_LOG_NAME
 from configs import configure_logging
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start or /help is issued."""
-    user = update.effective_user
-    logging.info(f'Someone starts bot: {get_user_info(update)}')
+    if update.message.text == '/start':
+        logging.info(f'Someone starts bot: {get_user_info(update)}')
+
     await update.message.reply_html(
-        f"👋 Привет {user.mention_html()}!\n\n"
+        f"👋 Привет {update.effective_user.mention_html()}!\n\n"
         f"<b>Команды бота</b>\n"
         f"/add - добавить человека в список\n"
         f"/delete - удалить человека из списка\n"
@@ -29,6 +39,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         f"/today - у кого сегодня день рождения\n"
         f"/week - у кого есть дни рождения в течение 7 дней\n"
         f"/month - у кого есть дни рождения в течение 30 дней\n\n"
+        f"/menu - открыть меню\n\n"
         f"Когда у кого-то из списка будет день рождения, "
         f"я сообщу тебе об этом.",
         reply_markup=MAIN_BUTTONS
@@ -99,6 +110,15 @@ async def next_month_birthdays_command(
     await send_next_birthdays_message(update, 30)
 
 
+async def show_menu(
+        update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> None:
+    await update.message.reply_text(
+        'Используйте меню внизу экрана для взаимодействия со мной\n\n ⬇️',
+        reply_markup=MAIN_BUTTONS
+    )
+
+
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Echo the user message."""
     # await update.message.reply_text(update.message.text)
@@ -115,12 +135,31 @@ def main() -> None:
     application = Application.builder().token(TOKEN).build()
     application.add_handler(add_conv_handler)
     application.add_handler(delete_conv_handler)
-    application.add_handler(CommandHandler(["start", "help"], start))
-    application.add_handler(CommandHandler("show_all", show_all_command))
-    application.add_handler(CommandHandler("today", today_birthdays_command))
-    application.add_handler(CommandHandler("week", next_week_birthday_command))
-    application.add_handler(CommandHandler("month",
-                                           next_month_birthdays_command))
+    application.add_handler(MessageHandler(
+        filters.Regex(HELP_BTN)
+        | filters.Regex("/start")
+        | filters.Regex("/help"),
+        start
+    ))
+    application.add_handler(MessageHandler(
+        filters.Regex(ALL_BTN) | filters.Regex("/show_all"),
+        show_all_command
+    ))
+    application.add_handler(MessageHandler(
+        filters.Regex(TODAY_BTN) | filters.Regex("/today"),
+        today_birthdays_command
+    ))
+    application.add_handler(MessageHandler(
+        filters.Regex(WEEK_BTN) | filters.Regex("/week"),
+        next_week_birthday_command
+    ))
+    application.add_handler(MessageHandler(
+        filters.Regex(MONTH_BTN) | filters.Regex("/month"),
+        next_month_birthdays_command
+    ))
+
+    application.add_handler(CommandHandler('menu', show_menu))
+
     application.add_handler(MessageHandler(
         filters.TEXT & ~filters.COMMAND, echo))
     application.run_polling()
