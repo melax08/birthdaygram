@@ -7,18 +7,20 @@ from telegram.ext import (CommandHandler, ContextTypes, MessageHandler,
 from alchemy_actions import UserTable
 from exceptions import BirthDateError, FullNameError
 from validators import birth_date_validator, full_name_validator
-from .misc import YES_NO_BUTTONS, MAIN_BUTTONS, cancel, clear_data
+from .misc import YES_NO_BUTTONS, MAIN_BUTTONS, cancel
 
 FULL_NAME, BIRTHDATE, CONFIRMATION = range(3)
 
 
-async def add_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+async def add_command(
+        update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text('Напишите полное имя человека, '
                                     'для отмены /cancel')
     return FULL_NAME
 
 
-async def _full_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+async def _full_name(
+        update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     full_name = update.message.text
     try:
         full_name_validator(full_name)
@@ -31,7 +33,8 @@ async def _full_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     return BIRTHDATE
 
 
-async def _birth_date(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+async def _birth_date(
+        update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     birth_date = update.message.text
     try:
         birth_date_db = birth_date_validator(birth_date)
@@ -46,10 +49,11 @@ async def _birth_date(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int
     return CONFIRMATION
 
 
-async def _confirmation(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+async def _confirmation(
+        update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     answer = update.message.text
     if answer.lower() == 'нет':
-        clear_data(context.user_data)
+        context.user_data.clear()
         await update.message.reply_text('В таком случае, заполните все '
                                         'сначала. Напишите имя человека.')
         return FULL_NAME
@@ -59,8 +63,12 @@ async def _confirmation(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
             context.user_data.get("full_name"),
             context.user_data.get("birth_date")
         )
-        logging.info(f'User {update.effective_user.id} add {context.user_data.get("full_name")} {context.user_data.get("birth_date")}')
-        clear_data(context.user_data)
+        logging.info(
+            f'User {update.effective_user.id} '
+            f'add {context.user_data.get("full_name")} '
+            f'{context.user_data.get("birth_date")}'
+        )
+        context.user_data.clear()
         await update.message.reply_text('✅ Успешно!',
                                         reply_markup=MAIN_BUTTONS)
         return ConversationHandler.END

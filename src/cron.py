@@ -5,7 +5,7 @@ import asyncio
 import logging
 
 from alchemy_actions import CheckTable, UserTable
-from utils import check_today_birthdays, send_message
+from utils import get_today_birthdays_message, send_message
 from configs import configure_logging
 
 
@@ -21,7 +21,7 @@ async def tables_processing(tables: list) -> None:
     for chat_id in tables:
         user = UserTable(chat_id)
         user_today_birthdays = user.today_birthdays()
-        message = check_today_birthdays(user_today_birthdays)
+        message = get_today_birthdays_message(user_today_birthdays)
         if message is not None:
             logging.info(f'User: {chat_id} has today birthdays. '
                          f'Sending a message.')

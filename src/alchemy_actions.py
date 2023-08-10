@@ -1,27 +1,11 @@
-import os
 import datetime as dt
 
 from sqlalchemy import (create_engine, Column, Integer, String, Date, inspect,
-                        func)
+                        func, select, Interval)
 from sqlalchemy.orm import Session, declared_attr, declarative_base
 from sqlalchemy.sql.expression import extract
 
-from constants import FULL_NAME_MAX_LEN, SQLITE_DB_NAME
-
-
-if int(os.getenv('LOCAL', default=0)):
-    sql_settings = f'sqlite:///{SQLITE_DB_NAME}'
-    ECHO = True
-else:
-    db_user = os.getenv("POSTGRES_USER", default='birthdaygram')
-    db_password = os.getenv("POSTGRES_PASSWORD", default='123456')
-    db_host = os.getenv("DB_HOST", default='db')
-    db_port = os.getenv("DB_PORT", default='5432')
-    db_name = os.getenv("DB_NAME", default='birthdaygram')
-    sql_settings = (
-        f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
-    )
-    ECHO = False
+from constants import FULL_NAME_MAX_LEN, sql_settings, ECHO
 
 
 class PreBase:
@@ -32,6 +16,7 @@ class PreBase:
     @declared_attr
     def __tablename__(cls):
         return cls.chat_id
+
     __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True)
@@ -76,12 +61,12 @@ class UserTable:
         self.session.commit()
 
     def select_person(self, name):
-        """Selects record from DB with specified full_name."""
+        """Selects the record from DB with specified full_name."""
         return self.session.query(self.user_table).filter(
             self.user_table.full_name == name).first()
 
     def delete_person(self, person):
-        """Deletes record from DB with specified person."""
+        """Deletes the record from DB with specified person."""
         self.session.delete(person)
         self.session.commit()
 
@@ -94,6 +79,41 @@ class UserTable:
             func.cast(extract("day", self.user_table.birth_date), Integer)
             == today.day
         ).all()
+
+    @staticmethod
+    def age_years_at(sa_col, next_days: int = 0):
+        """
+        Generates a postgresql specific statement to return 'age' (in years)
+        from the provided field either today (next_days == 0)
+        or with the `next_days` offset.
+        """
+        statement = func.age(
+            (sa_col - func.cast(dt.timedelta(next_days), Interval))
+            if next_days != 0
+            else sa_col
+        )
+        return func.date_part("year", statement)
+
+    def has_birthday_next_days(self, sa_col, next_days: int = 0):
+        """
+        Sqlalchemy expression to indicate that
+        a sa_col (such as`User.birth_date`)
+        has anniversary within next `next_days` days.
+
+        It is implemented by checking if the 'age' of the person (in years)
+        has changed between today and the `next_days` date.
+        """
+        return self.age_years_at(sa_col, next_days) > self.age_years_at(sa_col)
+
+    def next_days_interval_birthdays(self, days):
+        """Selects all birthdays from the user table
+        with anniversary in specified next days."""
+        return self.session.execute(
+            select(
+                self.user_table
+            ).where(
+                self.has_birthday_next_days(self.user_table.birth_date, days))
+        ).scalars().all()
 
     def __del__(self):
         self.session.close()

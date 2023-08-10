@@ -5,19 +5,21 @@ from telegram.ext import (CommandHandler, ContextTypes, MessageHandler,
                           filters, ConversationHandler)
 
 from alchemy_actions import UserTable
-from .misc import YES_NO_BUTTONS, MAIN_BUTTONS, cancel, clear_data
+from .misc import YES_NO_BUTTONS, MAIN_BUTTONS, cancel
 
 FULL_NAME, CONFIRMATION = range(2)
 
 
-async def delete_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+async def delete_command(
+        update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text('Напишите полное имя человека которого '
                                     'хотите удалить из списка. '
                                     'Для отмены /cancel')
     return FULL_NAME
 
 
-async def _full_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+async def _full_name(
+        update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     full_name = update.message.text
     user_table = UserTable(update.effective_chat.id)
     person = user_table.select_person(full_name)
@@ -27,15 +29,19 @@ async def _full_name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         return FULL_NAME
     else:
         context.user_data["person_to_delete"] = person
-        await update.message.reply_text(f'Произвести удаление {person.full_name}, дата рождения: {person.birth_date:%d.%m.%Y}?',
-                                        reply_markup=YES_NO_BUTTONS)
+        await update.message.reply_text(
+            f'Произвести удаление {person.full_name}, '
+            f'дата рождения: {person.birth_date:%d.%m.%Y}?',
+            reply_markup=YES_NO_BUTTONS
+        )
     return CONFIRMATION
 
 
-async def _confirmation(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+async def _confirmation(
+        update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     answer = update.message.text
     if answer.lower() == 'нет':
-        clear_data(context.user_data)
+        context.user_data.clear()
         await update.message.reply_text('Действие отменено.',
                                         reply_markup=MAIN_BUTTONS)
         return ConversationHandler.END
@@ -46,7 +52,7 @@ async def _confirmation(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
             f'User {update.effective_user.id} '
             f'delete {context.user_data.get("person_to_delete")}'
         )
-        clear_data(context.user_data)
+        context.user_data.clear()
         await update.message.reply_text('✅ Успешно!',
                                         reply_markup=MAIN_BUTTONS)
         return ConversationHandler.END

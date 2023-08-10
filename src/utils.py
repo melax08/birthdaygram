@@ -1,13 +1,13 @@
 import datetime as dt
-from typing import Optional
+from typing import Optional, List
 
-from telegram import Bot
+from telegram import Bot, Update
 
 from constants import TOKEN
 
 
 async def send_message(message: str, chat_id: str) -> None:
-    """Send telegram message."""
+    """Sends the specified telegram message to the specified user."""
     bot = Bot(token=TOKEN)
     await bot.send_message(chat_id, message)
 
@@ -25,8 +25,8 @@ def birthdate_processing(birthdate: dt) -> tuple:
     return f'{birthdate:%d.%m.%Y}', age
 
 
-def check_today_birthdays(records: list) -> Optional[list]:
-    """Check today birthdays query, return message if any birthday."""
+def get_today_birthdays_message(records: list) -> Optional[List[str]]:
+    """Creates a message about today birthdays."""
     message = None
     if len(records) > 0:
         message = ['⚡️ Сегодня день рождения у:']
@@ -37,10 +37,34 @@ def check_today_birthdays(records: list) -> Optional[list]:
     return message
 
 
+def get_next_interval_birthdays_message(
+        records: list, interval: int) -> List[str]:
+    """Creates a message with information
+    about birthdays in the specified interval."""
+    message = None
+    if len(records) > 0:
+        message = [
+            f'❕ В течение следующих {interval} дней есть дни рождения у:\n'
+        ]
+        for record in records:
+            birthdate, age = birthdate_processing(record.birth_date)
+            message.append(
+                f'{record.full_name}, исполнится: {age + 1} ({birthdate})'
+            )
+    return message
+
+
 def create_persons_info_list(data: list) -> list:
-    """Create message with information about selected person(s)."""
+    """Creates a message with information about selected person(s)."""
     message = []
     for record in data:
         birthdate, age = birthdate_processing(record.birth_date)
         message.append(f'{record.full_name}, возраст: {age}, {birthdate}')
     return message
+
+
+def get_user_info(update: Update) -> str:
+    """Creates a string with information about the current telegram user."""
+    info = update.message
+    return (f'{info.chat.username}, {info.chat.first_name} '
+            f'{info.chat.last_name}, {update.effective_user.id}')
