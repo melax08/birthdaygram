@@ -1,7 +1,7 @@
 import datetime as dt
 
 from sqlalchemy import (create_engine, Column, Integer, String, Date, inspect,
-                        func, select, Interval)
+                        func, select, Interval, and_)
 from sqlalchemy.orm import Session, declared_attr, declarative_base
 from sqlalchemy.sql.expression import extract
 
@@ -48,11 +48,12 @@ class UserTable:
 
     def show_all(self):
         """Makes DB query to get all user records in table."""
-        return self.session.query(
-            self.user_table).order_by(
-            extract("month", self.user_table.birth_date),
-            extract("day", self.user_table.birth_date)
-        )
+        return self.session.execute(
+            select(self.user_table).order_by(
+                extract("month", self.user_table.birth_date),
+                extract("day", self.user_table.birth_date)
+            )
+        ).scalars().all()
 
     def add_person(self, name: str, birthdate: dt) -> None:
         """Makes DB query to add new record to user table."""
@@ -62,8 +63,11 @@ class UserTable:
 
     def select_person(self, name):
         """Selects the record from DB with specified full_name."""
-        return self.session.query(self.user_table).filter(
-            self.user_table.full_name == name).first()
+        return self.session.execute(
+            select(self.user_table).where(
+                self.user_table.full_name == name
+            )
+        ).scalars().first()
 
     def delete_person(self, person):
         """Deletes the record from DB with specified person."""
@@ -73,12 +77,13 @@ class UserTable:
     def today_birthdays(self):
         """Makes DB query to get all user records with today birthdays."""
         today = dt.date.today()
-        return self.session.query(self.user_table).filter(
-            func.cast(extract("month", self.user_table.birth_date), Integer)
-            == today.month,
-            func.cast(extract("day", self.user_table.birth_date), Integer)
-            == today.day
-        ).all()
+        return self.session.execute(
+            select(self.user_table).where(and_(
+                func.cast(extract("month", self.user_table.birth_date),
+                          Integer) == today.month),
+                func.cast(extract("day", self.user_table.birth_date),
+                          Integer) == today.day)
+        ).scalars().all()
 
     @staticmethod
     def age_years_at(sa_col, next_days: int = 0):

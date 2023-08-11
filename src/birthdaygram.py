@@ -51,10 +51,10 @@ async def show_all_command(
     """Send a message with all records in database."""
     user_table = UserTable(update.effective_chat.id)
     records = user_table.show_all()
-    count = records.count()
+    count = len(records)
 
     if count:
-        persons = create_persons_info_list(records.all())
+        persons = create_persons_info_list(records)
         message = [f'🗂 Список людей в базе ({count}):']
         message.extend(persons)
     else:
