@@ -4,3 +4,7 @@ class BirthDateError(Exception):
 
 class FullNameError(Exception):
     pass
+
+
+class EmptyQuery(Exception):
+    pass

@@ -1,5 +1,4 @@
 import datetime as dt
-from typing import Optional, List
 
 from telegram import Bot, Update
 
@@ -23,35 +22,6 @@ def birthdate_processing(birthdate: dt) -> tuple:
     elif birthdate.month > now.month:
         age -= 1
     return f'{birthdate:%d.%m.%Y}', age
-
-
-def get_today_birthdays_message(records: list) -> Optional[List[str]]:
-    """Creates a message about today birthdays."""
-    message = None
-    if len(records) > 0:
-        message = ['⚡️ Сегодня день рождения у:']
-        for record in records:
-            birthdate, age = birthdate_processing(record.birth_date)
-            message.append(
-                f'🎂 {record.full_name}, исполнилось: {age} ({birthdate})')
-    return message
-
-
-def get_next_interval_birthdays_message(
-        records: list, interval: int) -> List[str]:
-    """Creates a message with information
-    about birthdays in the specified interval."""
-    message = None
-    if len(records) > 0:
-        message = [
-            f'❕ В течение следующих {interval} дней есть дни рождения у:\n'
-        ]
-        for record in records:
-            birthdate, age = birthdate_processing(record.birth_date)
-            message.append(
-                f'{record.full_name}, исполнится: {age + 1} ({birthdate})'
-            )
-    return message
 
 
 def create_persons_info_list(data: list) -> list:

@@ -4,13 +4,8 @@ from telegram import Update
 from telegram.ext import (Application, CommandHandler, ContextTypes,
                           MessageHandler, filters,)
 
-from alchemy_actions import UserTable
-from utils import (
-    create_persons_info_list,
-    get_today_birthdays_message,
-    get_next_interval_birthdays_message,
-    get_user_info
-)
+from utils import get_user_info
+
 from tg_handlers import (
     add_conv_handler,
     delete_conv_handler,
@@ -23,6 +18,8 @@ from tg_handlers import (
 )
 from constants import TOKEN, BIRTHDAYGRAM_LOG_NAME
 from configs import configure_logging
+from services import show_all, today_birthdays, next_birthdays
+from exceptions import EmptyQuery
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -49,17 +46,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def show_all_command(
         update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message with all records in database."""
-    user_table = UserTable(update.effective_chat.id)
-    records = user_table.show_all()
-    count = len(records)
+    try:
+        message = show_all(update.effective_chat.id)
+    except EmptyQuery as error:
+        message = [str(error)]
 
-    if count:
-        persons = create_persons_info_list(records)
-        message = [f'🗂 Список людей в базе ({count}):']
-        message.extend(persons)
-    else:
-        message = ['В базе данных нет записей! '
-                   'Может добавите кого-нибудь? /add']
     logging.info(f'Send message about all records '
                  f'to {get_user_info(update)}. Message: {message}')
     await update.message.reply_text('\n'.join(message),
@@ -69,11 +60,11 @@ async def show_all_command(
 async def today_birthdays_command(
         update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends a message with today birthdays."""
-    user_table = UserTable(update.effective_chat.id)
-    records = user_table.today_birthdays()
-    message = get_today_birthdays_message(records)
-    if message is None:
-        message = ['Сегодня ни у кого нет дня рождения :(']
+    try:
+        message = today_birthdays(update.effective_chat.id)
+    except EmptyQuery as error:
+        message = [str(error)]
+
     logging.info(f'Send message about today birthdays '
                  f'to {get_user_info(update)}. Message: {message}')
     await update.message.reply_text('\n'.join(message),
@@ -83,11 +74,10 @@ async def today_birthdays_command(
 async def send_next_birthdays_message(update, interval) -> None:
     """Gets DB records for selected interval,
     sends telegram message for user about birthdays in this interval."""
-    user_table = UserTable(update.effective_chat.id)
-    records = user_table.next_days_interval_birthdays(interval)
-    message = get_next_interval_birthdays_message(records, interval)
-    if message is None:
-        message = [f'В течение {interval} дней ни у кого нет дней рождения.']
+    try:
+        message = next_birthdays(update.effective_chat.id, interval)
+    except EmptyQuery as error:
+        message = [str(error)]
 
     logging.info(f'Send message about next {interval} days birthdays '
                  f'to {get_user_info(update)}. Message: {message}')

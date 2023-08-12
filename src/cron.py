@@ -4,9 +4,11 @@ Cron task for check today and next birthdays for all users.
 import asyncio
 import logging
 
-from alchemy_actions import CheckTable, UserTable
-from utils import get_today_birthdays_message, send_message
+from alchemy_actions import CheckTable
+from utils import send_message
 from configs import configure_logging
+from services import today_birthdays
+from exceptions import EmptyQuery
 
 
 def get_tables() -> list:
@@ -19,13 +21,13 @@ async def tables_processing(tables: list) -> None:
     """Checks every table for today birthdays,
     sends a message to the user if any."""
     for chat_id in tables:
-        user = UserTable(chat_id)
-        user_today_birthdays = user.today_birthdays()
-        message = get_today_birthdays_message(user_today_birthdays)
-        if message is not None:
+        try:
+            message = today_birthdays(chat_id)
             logging.info(f'User: {chat_id} has today birthdays. '
                          f'Sending a message.')
             await send_message('\n'.join(message), chat_id)
+        except EmptyQuery:
+            pass
 
 
 async def main():
