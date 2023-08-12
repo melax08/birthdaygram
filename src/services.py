@@ -1,6 +1,6 @@
 from typing import List
 
-from alchemy_actions import UserTable
+from database import UserTable
 from exceptions import EmptyQuery
 from utils import create_persons_info_list, birthdate_processing
 
@@ -34,6 +34,23 @@ def today_birthdays(chat_id: int) -> List[str]:
         birthdate, age = birthdate_processing(record.birth_date)
         message.append(
             f'🎂 {record.full_name}, исполнилось: {age} ({birthdate})')
+
+    return message
+
+
+def next_week_birthdays(chat_id: int) -> List[str]:
+    user_table = UserTable(chat_id)
+    records = user_table.next_week_birthdays()
+
+    if not len(records):
+        raise EmptyQuery
+
+    message = ['‼️ Ровно через неделю день рождения у:']
+    for record in records:
+        birthdate, age = birthdate_processing(record.birth_date)
+        message.append(
+            f'{record.full_name}, исполнится: {age + 1} ({birthdate})'
+        )
 
     return message
 

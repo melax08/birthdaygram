@@ -1,10 +1,10 @@
 import logging
 
-from telegram import Update
+from telegram import Update, ReplyKeyboardRemove
 from telegram.ext import (CommandHandler, ContextTypes, MessageHandler,
                           filters, ConversationHandler)
 
-from alchemy_actions import UserTable
+from database import UserTable
 from exceptions import BirthDateError, FullNameError
 from validators import birth_date_validator, full_name_validator
 from .misc import YES_NO_BUTTONS, MAIN_BUTTONS, cancel, ADD_BTN
@@ -14,8 +14,10 @@ FULL_NAME, BIRTHDATE, CONFIRMATION = range(3)
 
 async def add_command(
         update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.message.reply_text('Напишите полное имя человека, '
-                                    'для отмены /cancel')
+    await update.message.reply_text(
+        'Напишите полное имя человека, для отмены /cancel',
+        reply_markup=ReplyKeyboardRemove()
+    )
     return FULL_NAME
 
 

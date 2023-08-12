@@ -1,10 +1,10 @@
 import logging
 
-from telegram import Update
+from telegram import Update, ReplyKeyboardRemove
 from telegram.ext import (CommandHandler, ContextTypes, MessageHandler,
                           filters, ConversationHandler)
 
-from alchemy_actions import UserTable
+from database import UserTable
 from .misc import YES_NO_BUTTONS, MAIN_BUTTONS, cancel, DELETE_BTN
 
 FULL_NAME, CONFIRMATION = range(2)
@@ -12,9 +12,11 @@ FULL_NAME, CONFIRMATION = range(2)
 
 async def delete_command(
         update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
-    await update.message.reply_text('Напишите полное имя человека которого '
-                                    'хотите удалить из списка. '
-                                    'Для отмены /cancel')
+    await update.message.reply_text(
+        'Напишите полное имя человека которого хотите удалить из списка. '
+        'Для отмены /cancel',
+        reply_markup=ReplyKeyboardRemove()
+    )
     return FULL_NAME
 
 

@@ -5,7 +5,7 @@ from sqlalchemy import (create_engine, Column, Integer, String, Date, inspect,
 from sqlalchemy.orm import Session, declared_attr, declarative_base
 from sqlalchemy.sql.expression import extract
 
-from constants import FULL_NAME_MAX_LEN, sql_settings, ECHO
+from constants import FULL_NAME_MAX_LEN, SQL_SETTINGS, ECHO
 
 
 class PreBase:
@@ -41,7 +41,7 @@ class UserTable:
         class User(Base):
             chat_id = self.chat_id
 
-        self.engine = create_engine(sql_settings, echo=ECHO)
+        self.engine = create_engine(SQL_SETTINGS, echo=ECHO)
         Base.metadata.create_all(self.engine)
         session = Session(self.engine)
         return session, User
@@ -74,16 +74,24 @@ class UserTable:
         self.session.delete(person)
         self.session.commit()
 
-    def today_birthdays(self):
-        """Makes DB query to get all user records with today birthdays."""
-        today = dt.date.today()
+    def _birthdays_in_date(self, date: dt):
+        """Selects persons with birthday in specified date."""
         return self.session.execute(
             select(self.user_table).where(and_(
                 func.cast(extract("month", self.user_table.birth_date),
-                          Integer) == today.month),
+                          Integer) == date.month),
                 func.cast(extract("day", self.user_table.birth_date),
-                          Integer) == today.day)
+                          Integer) == date.day)
         ).scalars().all()
+
+    def today_birthdays(self):
+        """Makes DB query to get all user records with today birthdays."""
+        return self._birthdays_in_date(dt.date.today())
+
+    def next_week_birthdays(self):
+        """Makes DB query to get all user records with birthdays in 7 days."""
+        return self._birthdays_in_date(dt.date.today() + dt.timedelta(days=7))
+
 
     @staticmethod
     def age_years_at(sa_col, next_days: int = 0):
@@ -130,7 +138,7 @@ class CheckTable:
         self.__connect()
 
     def __connect(self):
-        self.engine = create_engine(sql_settings, echo=ECHO)
+        self.engine = create_engine(SQL_SETTINGS, echo=ECHO)
 
     def select_tables(self):
         """Makes DB query to get all DB tables names."""
