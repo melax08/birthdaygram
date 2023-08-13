@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
-COPY requirements.txt src ./
+COPY pyproject.toml poetry.lock src ./
 
 RUN pip3 install --upgrade pip
 RUN pip3 install poetry --no-cache-dir
