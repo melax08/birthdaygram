@@ -92,7 +92,6 @@ class UserTable:
         """Makes DB query to get all user records with birthdays in 7 days."""
         return self._birthdays_in_date(dt.date.today() + dt.timedelta(days=7))
 
-
     @staticmethod
     def age_years_at(sa_col, next_days: int = 0):
         """
