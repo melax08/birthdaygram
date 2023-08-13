@@ -2,7 +2,8 @@ import datetime as dt
 
 from telegram import Bot, Update
 
-from constants import TOKEN
+from .constants.constants import TOKEN, DATE_FORMAT
+from .constants.messages import PERSON_INFO
 
 
 async def send_message(message: str, chat_id: str) -> None:
@@ -21,7 +22,7 @@ def birthdate_processing(birthdate: dt) -> tuple:
             age -= 1
     elif birthdate.month > now.month:
         age -= 1
-    return f'{birthdate:%d.%m.%Y}', age
+    return birthdate.strftime(DATE_FORMAT), age
 
 
 def create_persons_info_list(data: list) -> list:
@@ -29,7 +30,7 @@ def create_persons_info_list(data: list) -> list:
     message = []
     for record in data:
         birthdate, age = birthdate_processing(record.birth_date)
-        message.append(f'{record.full_name}, возраст: {age}, {birthdate}')
+        message.append(PERSON_INFO.format(record.full_name, age, birthdate))
     return message
 
 

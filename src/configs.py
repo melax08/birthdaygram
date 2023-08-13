@@ -5,7 +5,7 @@ from logging.handlers import RotatingFileHandler
 BASE_DIR = Path(__file__).parent
 LOG_DIR = BASE_DIR / 'logs'
 LOG_FORMAT = "%(asctime)s - [%(levelname)s] - %(message)s"
-DT_FORMAT = '%d.%m.%Y %H:%M:%S'
+LOG_DT_FORMAT = '%d.%m.%Y %H:%M:%S'
 LOG_BACKUP_COUNT = 5
 LOG_MAX_SIZE = 50000000
 
@@ -35,7 +35,7 @@ def configure_logging(log_file_name: str) -> None:
         log_file, maxBytes=LOG_MAX_SIZE, backupCount=LOG_BACKUP_COUNT
     )
     logging.basicConfig(
-        datefmt=DT_FORMAT,
+        datefmt=LOG_DT_FORMAT,
         format=LOG_FORMAT,
         level=logging.INFO,
         handlers=(rotating_handler, logging.StreamHandler())

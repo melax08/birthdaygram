@@ -5,7 +5,7 @@ from sqlalchemy import (create_engine, Column, Integer, String, Date, inspect,
 from sqlalchemy.orm import Session, declared_attr, declarative_base
 from sqlalchemy.sql.expression import extract
 
-from constants import FULL_NAME_MAX_LEN, SQL_SETTINGS, ECHO
+from .constants.constants import FULL_NAME_MAX_LEN, SQL_SETTINGS, ECHO
 
 
 class PreBase:
@@ -144,8 +144,3 @@ class CheckTable:
         """Makes DB query to get all DB tables names."""
         insp = inspect(self.engine)
         return insp.get_table_names()
-
-
-if __name__ == "__main__":
-    table = UserTable(159956275)
-    print()

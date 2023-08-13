@@ -4,17 +4,27 @@ from telegram import Update, ReplyKeyboardRemove
 from telegram.ext import (CommandHandler, ContextTypes, MessageHandler,
                           filters, ConversationHandler)
 
-from database import UserTable
-from .misc import YES_NO_BUTTONS, MAIN_BUTTONS, cancel, DELETE_BTN
+from bot.database import UserTable
+from bot.constants.buttons import MAIN_BUTTONS, YES_NO_BUTTONS, DELETE_BUTTON
+from bot.constants.messages import (
+    WRITE_FULL_NAME_TO_DELETE,
+    PERSON_NOT_FOUND,
+    ACTION_CANCELED,
+    SUCCESS,
+    REPEAT_MESSAGE,
+    DELETE_CONFIRMATION
+)
+from bot.constants.constants import DATE_FORMAT
+from .cancel_handler import cancel
 
 FULL_NAME, CONFIRMATION = range(2)
 
 
 async def delete_command(
-        update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+        update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
     await update.message.reply_text(
-        'Напишите полное имя человека которого хотите удалить из списка. '
-        'Для отмены /cancel',
+        WRITE_FULL_NAME_TO_DELETE,
         reply_markup=ReplyKeyboardRemove()
     )
     return FULL_NAME
@@ -26,14 +36,15 @@ async def _full_name(
     user_table = UserTable(update.effective_chat.id)
     person = user_table.select_person(full_name)
     if not person:
-        await update.message.reply_text('Указанное имя не найдено в базе. '
-                                        'Введите новое имя, или /cancel')
+        await update.message.reply_text(PERSON_NOT_FOUND)
         return FULL_NAME
     else:
         context.user_data["person_to_delete"] = person
         await update.message.reply_text(
-            f'Произвести удаление {person.full_name}, '
-            f'дата рождения: {person.birth_date:%d.%m.%Y}?',
+            DELETE_CONFIRMATION.format(
+                person.full_name,
+                person.birth_date.strftime(DATE_FORMAT)
+            ),
             reply_markup=YES_NO_BUTTONS
         )
     return CONFIRMATION
@@ -44,7 +55,7 @@ async def _confirmation(
     answer = update.message.text
     if answer.lower() == 'нет':
         context.user_data.clear()
-        await update.message.reply_text('Действие отменено.',
+        await update.message.reply_text(ACTION_CANCELED,
                                         reply_markup=MAIN_BUTTONS)
         return ConversationHandler.END
     elif answer.lower() == 'да':
@@ -55,18 +66,19 @@ async def _confirmation(
             f'delete {context.user_data.get("person_to_delete")}'
         )
         context.user_data.clear()
-        await update.message.reply_text('✅ Успешно!',
+        await update.message.reply_text(SUCCESS,
                                         reply_markup=MAIN_BUTTONS)
         return ConversationHandler.END
     else:
-        await update.message.reply_text('Ответьте, Да или Нет.',
+        await update.message.reply_text(REPEAT_MESSAGE,
                                         reply_markup=YES_NO_BUTTONS)
         return CONFIRMATION
 
 
-delete_conv_handler = ConversationHandler(
+delete_handler = ConversationHandler(
     entry_points=[MessageHandler(
-        filters.Regex(DELETE_BTN) | filters.Regex('/delete'), delete_command)
+        filters.Regex(DELETE_BUTTON) | filters.Regex('/delete'),
+        delete_command)
     ],
     states={
         FULL_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND,

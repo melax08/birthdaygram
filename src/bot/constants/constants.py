@@ -7,6 +7,8 @@ load_dotenv()
 FULL_NAME_MAX_LEN = 50
 BIRTHDAYGRAM_LOG_NAME = 'birthdaygram.log'
 
+DATE_FORMAT = '%d.%m.%Y'
+
 TOKEN = os.getenv('TOKEN')
 db_user = os.getenv("POSTGRES_USER", default='birthdaygram')
 db_password = os.getenv("POSTGRES_PASSWORD", default='123456')

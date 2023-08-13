@@ -10,4 +10,4 @@ COPY requirements.txt src ./
 RUN pip3 install --upgrade pip
 RUN pip3 install -r  /app/requirements.txt --no-cache-dir
 
-CMD ["python3", "birthdaygram.py"]
+CMD ["python3", "bot.py"]

@@ -4,11 +4,11 @@ Cron task for check today and next birthdays for all users.
 import asyncio
 import logging
 
-from database import CheckTable
-from utils import send_message
+from bot.database import CheckTable
+from bot.utils import send_message
 from configs import configure_logging
-from services import today_birthdays, next_week_birthdays
-from exceptions import EmptyQuery
+from bot.handlers.services import today_birthdays, next_week_birthdays
+from bot.exceptions import EmptyQuery
 
 
 def get_tables() -> list:
