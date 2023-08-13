@@ -9,6 +9,8 @@ COPY pyproject.toml poetry.lock src ./
 
 RUN pip3 install --upgrade pip
 RUN pip3 install poetry --no-cache-dir
-RUN poetry install
+RUN poetry config virtualenvs.create false && poetry install --no-dev --no-interaction --no-ansi
+
+copy . /app
 
 CMD ["python3", "bot.py"]

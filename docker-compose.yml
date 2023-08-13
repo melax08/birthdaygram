@@ -10,7 +10,7 @@ services:
       - src/.env
     environment:
       - TZ=Europe/Moscow
-  birthdaygram:
+  birthdaygram_bot:
     build: ./
     restart: always
     volumes:
