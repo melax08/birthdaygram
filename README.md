@@ -1,3 +1,5 @@
+![birthdaygram workflow](https://github.com/melax08/birthdaygram/actions/workflows/birthdaygram-workflow.yml/badge.svg)
+
 ## Settings
 ### Cron settings:
 To check today birthdays via cron, add cron-job to host machine:
