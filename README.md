@@ -2,6 +2,8 @@
 
 # Birthdaygram - telegram bot for birthday reminders
 
+![birthdaygram_logo.png](readme_imgs/birthdaygram_logo.png)
+
 ## Information
 
 ### Description
@@ -16,7 +18,7 @@ This project contains a telegram bot interface to easily manage the birthdays of
 - Ability to see who has a birthday today, within a week or within a month.
 - If you set up a cron task according to the instructions below, then the bot starts checking all users for the presence of people whose birthday is today and exactly 7 days later, after which it sends a message with a reminder of this
 
-![img.png](img.png)
+![bot_example.png](readme_imgs/bot_example.png)
 
 ### Author
 Ilya Malashenko (github: melax08)
