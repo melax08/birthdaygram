@@ -1,20 +1,13 @@
 from telegram.ext import Application
-from bot.constants.constants import TOKEN, BIRTHDAYGRAM_LOG_NAME
-from configs import configure_logging
-from bot.handlers.main_handlers import (
-    start_handler,
-    menu_handler,
-    text_handler
-)
-from bot.handlers.birthday_handlers import (
-    show_all_handler,
-    today_handler,
-    week_handler,
-    month_handler
-)
 
+from bot.constants.constants import BIRTHDAYGRAM_LOG_NAME, TOKEN
 from bot.handlers.add_handler import add_handler
+from bot.handlers.birthday_handlers import (month_handler, show_all_handler,
+                                            today_handler, week_handler)
 from bot.handlers.delete_handler import delete_handler
+from bot.handlers.main_handlers import (menu_handler, start_handler,
+                                        text_handler)
+from configs import configure_logging
 
 
 def start_bot() -> None:

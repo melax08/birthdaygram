@@ -1,11 +1,11 @@
 import datetime as dt
 
-from sqlalchemy import (create_engine, Column, Integer, String, Date, inspect,
-                        func, select, Interval, and_)
-from sqlalchemy.orm import Session, declared_attr, declarative_base
+from sqlalchemy import (Column, Date, Integer, Interval, String, and_,
+                        create_engine, func, inspect, select)
+from sqlalchemy.orm import Session, declarative_base, declared_attr
 from sqlalchemy.sql.expression import extract
 
-from .constants.constants import FULL_NAME_MAX_LEN, SQL_SETTINGS, ECHO
+from .constants.constants import ECHO, FULL_NAME_MAX_LEN, SQL_SETTINGS
 
 
 class PreBase:

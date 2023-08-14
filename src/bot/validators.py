@@ -1,11 +1,8 @@
 import datetime as dt
 
-from .constants.constants import FULL_NAME_MAX_LEN, DATE_FORMAT
-from .constants.messages import (
-    INCORRECT_BIRTHDATE,
-    UNBORN_PERSON,
-    TOO_LONG_NAME
-)
+from .constants.constants import DATE_FORMAT, FULL_NAME_MAX_LEN
+from .constants.messages import (INCORRECT_BIRTHDATE, TOO_LONG_NAME,
+                                 UNBORN_PERSON)
 from .exceptions import BirthDateError, FullNameError
 
 

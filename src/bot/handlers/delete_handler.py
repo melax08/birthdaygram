@@ -1,20 +1,16 @@
 import logging
 
-from telegram import Update, ReplyKeyboardRemove
-from telegram.ext import (CommandHandler, ContextTypes, MessageHandler,
-                          filters, ConversationHandler)
+from telegram import ReplyKeyboardRemove, Update
+from telegram.ext import (CommandHandler, ContextTypes, ConversationHandler,
+                          MessageHandler, filters)
 
-from bot.database import UserTable
-from bot.constants.buttons import MAIN_BUTTONS, YES_NO_BUTTONS, DELETE_BUTTON
-from bot.constants.messages import (
-    WRITE_FULL_NAME_TO_DELETE,
-    PERSON_NOT_FOUND,
-    ACTION_CANCELED,
-    SUCCESS,
-    REPEAT_MESSAGE,
-    DELETE_CONFIRMATION
-)
+from bot.constants.buttons import DELETE_BUTTON, MAIN_BUTTONS, YES_NO_BUTTONS
 from bot.constants.constants import DATE_FORMAT
+from bot.constants.messages import (ACTION_CANCELED, DELETE_CONFIRMATION,
+                                    PERSON_NOT_FOUND, REPEAT_MESSAGE, SUCCESS,
+                                    WRITE_FULL_NAME_TO_DELETE)
+from bot.database import UserTable
+
 from .cancel_handler import cancel
 
 FULL_NAME, CONFIRMATION = range(2)

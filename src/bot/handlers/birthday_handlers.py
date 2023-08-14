@@ -3,16 +3,12 @@ import logging
 from telegram import Update
 from telegram.ext import ContextTypes, MessageHandler, filters
 
-from .services import show_all, today_birthdays, next_birthdays
+from bot.constants.buttons import (ALL_BUTTON, MAIN_BUTTONS, MONTH_BUTTON,
+                                   TODAY_BUTTON, WEEK_BUTTON)
 from bot.exceptions import EmptyQuery
 from bot.utils import get_user_info
-from bot.constants.buttons import (
-    MAIN_BUTTONS,
-    ALL_BUTTON,
-    TODAY_BUTTON,
-    WEEK_BUTTON,
-    MONTH_BUTTON
-)
+
+from .services import next_birthdays, show_all, today_birthdays
 
 
 async def show_all_command(

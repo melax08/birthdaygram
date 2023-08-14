@@ -5,10 +5,10 @@ import asyncio
 import logging
 
 from bot.database import CheckTable
+from bot.exceptions import EmptyQuery
+from bot.handlers.services import next_week_birthdays, today_birthdays
 from bot.utils import send_message
 from configs import configure_logging
-from bot.handlers.services import today_birthdays, next_week_birthdays
-from bot.exceptions import EmptyQuery
 
 
 def get_tables() -> list:

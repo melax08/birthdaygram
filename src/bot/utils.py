@@ -2,7 +2,7 @@ import datetime as dt
 
 from telegram import Bot, Update
 
-from .constants.constants import TOKEN, DATE_FORMAT
+from .constants.constants import DATE_FORMAT, TOKEN
 from .constants.messages import PERSON_INFO
 
 

@@ -1,19 +1,15 @@
 from typing import List
 
+from bot.constants.messages import (EMPTY_TABLE_MESSAGE,
+                                    INTERVAL_BIRTHDAY_LABEL,
+                                    INTERVAL_NO_BIRTHDAYS, LIST_PERSONS_LABEL,
+                                    NEXT_WEEK_BIRTHDAY_LABEL,
+                                    NO_BIRTHDAYS_TODAY, PERSON_BIRTHDAY,
+                                    PERSON_NEXT_BIRTHDAY,
+                                    TODAY_BIRTHDAYS_LABEL)
 from bot.database import UserTable
 from bot.exceptions import EmptyQuery
-from bot.utils import create_persons_info_list, birthdate_processing
-from bot.constants.messages import (
-    EMPTY_TABLE_MESSAGE,
-    NO_BIRTHDAYS_TODAY,
-    TODAY_BIRTHDAYS_LABEL,
-    PERSON_BIRTHDAY,
-    LIST_PERSONS_LABEL,
-    NEXT_WEEK_BIRTHDAY_LABEL,
-    PERSON_NEXT_BIRTHDAY,
-    INTERVAL_NO_BIRTHDAYS,
-    INTERVAL_BIRTHDAY_LABEL
-)
+from bot.utils import birthdate_processing, create_persons_info_list
 
 
 def show_all(chat_id: int) -> List[str]:

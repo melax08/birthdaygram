@@ -1,21 +1,17 @@
 import logging
 
-from telegram import Update, ReplyKeyboardRemove
-from telegram.ext import (CommandHandler, ContextTypes, MessageHandler,
-                          filters, ConversationHandler)
+from telegram import ReplyKeyboardRemove, Update
+from telegram.ext import (CommandHandler, ContextTypes, ConversationHandler,
+                          MessageHandler, filters)
 
+from bot.constants.buttons import ADD_BUTTON, MAIN_BUTTONS, YES_NO_BUTTONS
+from bot.constants.messages import (ADD_CONFIRMATION, CLARIFICATION,
+                                    REPEAT_MESSAGE, SUCCESS, WRITE_BIRTHDATE,
+                                    WRITE_FULL_NAME)
 from bot.database import UserTable
 from bot.exceptions import BirthDateError, FullNameError
 from bot.validators import birth_date_validator, full_name_validator
-from bot.constants.buttons import MAIN_BUTTONS, YES_NO_BUTTONS, ADD_BUTTON
-from bot.constants.messages import (
-    WRITE_FULL_NAME,
-    WRITE_BIRTHDATE,
-    ADD_CONFIRMATION,
-    REPEAT_MESSAGE,
-    SUCCESS,
-    CLARIFICATION
-)
+
 from .cancel_handler import cancel
 
 FULL_NAME, BIRTHDATE, CONFIRMATION = range(3)
