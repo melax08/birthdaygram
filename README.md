@@ -82,6 +82,7 @@ Some of them you can set in .env file (see example in .env.example file).
 <summary>
 Scheduler settings
 </summary>
+<br>
 
 At the specified time, the scheduler runs a task to check all tables in the database for records of people whose birthday is today or exactly 7 days from now. Those who have these people added to the database will receive a telegram message with information about birthdays.
 

@@ -3,7 +3,7 @@ import datetime as dt
 
 from telegram.ext import ContextTypes, JobQueue
 
-from bot.database import CheckTable, get_tables
+from bot.database import get_tables
 from bot.exceptions import EmptyQuery
 from bot.handlers.services import next_week_birthdays, today_birthdays
 from bot.utils import send_message
