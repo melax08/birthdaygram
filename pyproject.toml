@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "birthdaygram"
-version = "1.0.0"
+version = "1.0.1"
 description = "Telegram bot for birthday reminders"
 authors = ["Ilya Malashenko <melax08@yandex.ru>"]
 license = "MIT license"
@@ -9,9 +9,9 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 python-dotenv = "0.21.1"
-python-telegram-bot = "20.0"
-sqlalchemy = "2.0.15"
-psycopg2-binary = "2.9.6"
+python-telegram-bot = {extras = ["job-queue"], version = "^20.4"}
+sqlalchemy = "2.0.20"
+psycopg2-binary = "2.9.7"
 
 
 [tool.poetry.group.dev.dependencies]

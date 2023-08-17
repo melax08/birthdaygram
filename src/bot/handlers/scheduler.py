@@ -1,20 +1,15 @@
-"""
-Cron task for check today and next birthdays for all users.
-"""
-import asyncio
 import logging
+import datetime as dt
 
-from bot.database import CheckTable
+from telegram.ext import ContextTypes, JobQueue
+
+from bot.database import CheckTable, get_tables
 from bot.exceptions import EmptyQuery
 from bot.handlers.services import next_week_birthdays, today_birthdays
 from bot.utils import send_message
-from configs import configure_logging
+from bot.constants.constants import RUN_SCHEDULER_HOURS
 
-
-def get_tables() -> list:
-    """Connects to database and gets a list of tables that are chat_id."""
-    database = CheckTable()
-    return database.select_tables()
+SCHEDULER_NAME = 'Birthdays check at {}'
 
 
 async def tables_processing(tables: list) -> None:
@@ -38,14 +33,23 @@ async def tables_processing(tables: list) -> None:
             pass
 
 
-async def main():
-    """Main coroutine."""
+def set_scheduler(job_queue: JobQueue) -> None:
+    """Sets the job queue scheduler to run regularly."""
+    if not RUN_SCHEDULER_HOURS:
+        return
+    times = [dt.time(hour=hour) for hour in RUN_SCHEDULER_HOURS]
+    for time in times:
+        job_queue.run_daily(
+            callback=scheduler_callback,
+            time=time,
+            name=SCHEDULER_NAME.format(time.hour),
+        )
+
+
+async def scheduler_callback(context: ContextTypes) -> None:
+    """Gets the list of user tables and check every table for today
+    and next week birthdays."""
+    logging.info('Started birthday reminder scheduler')
     tables = get_tables()
     await tables_processing(tables)
-
-
-if __name__ == '__main__':
-    configure_logging('cron.log')
-    logging.info('Cron started!')
-    asyncio.run(main())
-    logging.info('Cron finished.')
+    logging.info('Finished birthday reminder scheduler')

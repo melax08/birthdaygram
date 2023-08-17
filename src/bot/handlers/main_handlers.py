@@ -30,6 +30,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def show_menu(
         update: Update, context: ContextTypes.DEFAULT_TYPE
 ) -> None:
+    """Shows the bot menu to the user."""
     await update.message.reply_text(
         MENU_MESSAGE,
         reply_markup=MAIN_BUTTONS

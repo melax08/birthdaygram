@@ -143,3 +143,9 @@ class CheckTable:
         """Makes DB query to get all DB tables names."""
         insp = inspect(self.engine)
         return insp.get_table_names()
+
+
+def get_tables() -> list:
+    """Connects to database and gets a list of tables that are chat_id."""
+    database = CheckTable()
+    return database.select_tables()

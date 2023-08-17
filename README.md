@@ -16,7 +16,7 @@ This project contains a telegram bot interface to easily manage the birthdays of
 - Easy add or remove persons to your personal list.
 - View your entire personal list of people.
 - Ability to see who has a birthday today, within a week or within a month.
-- If you set up a cron task according to the instructions below, then the bot starts checking all users for the presence of people whose birthday is today and exactly 7 days later, after which it sends a message with a reminder of this
+- A scheduler that will run at the specified time then the bot starts checking all users for the presence of people whose birthday is today and exactly 7 days later, after which it sends a message with a reminder of this
 
 ![bot_example.png](readme_imgs/bot_example.png)
 
@@ -64,8 +64,6 @@ or
 docker-compose up -d
 ```
 
-If you need daily reminders from the bot, please follow the instructions below in the "Settings" section.
-
 </details>
 
 <details>
@@ -75,26 +73,29 @@ Without docker
 There is no information yet.
 </details>
 
-## Settings
+## Settings and documentation
+
+All bot constants you can find in src/bot/constants/constants.py. 
+Some of them you can set in .env file (see example in .env.example file).
 
 <details>
 <summary>
-Cron settings
+Scheduler settings
 </summary>
 
-To check today birthdays via cron, add cron-job to host machine:
+At the specified time, the scheduler runs a task to check all tables in the database for records of people whose birthday is today or exactly 7 days from now. Those who have these people added to the database will receive a telegram message with information about birthdays.
+
+You can set a **RUN_SCHEDULER_HOURS** constant in the file .env.
+Example:
 
 ```shell
-crontab -e
+RUN_SCHEDULER_HOURS=12 18
 ```
-```shell
-0 12,18 * * *  docker compose --file /home/birthdaygram/birthdaygram/docker-compose.yml exec birthdaygram_bot python cron.py
-```
-After --file specify the path to docker-compose.yml.
-This cron job will run cron task on 12 AM and 6 PM every day.
+
+The scheduler tasks will be added to the queue when the bot starts. 
+In this example, the scheduler will run at 12:00 (12:00 AM) and 18:00 (6:00 PM)
+
+If you set RUN_SCHEDULER_HOURS to the empty value (RUN_SCHEDULER_HOURS=), the scheduler will not work.
 
 </details>
 
-## Mini documentation
-
-In progress...
