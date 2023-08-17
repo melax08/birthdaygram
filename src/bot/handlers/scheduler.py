@@ -1,13 +1,13 @@
-import logging
 import datetime as dt
+import logging
 
 from telegram.ext import ContextTypes, JobQueue
 
+from bot.constants.constants import RUN_SCHEDULER_HOURS
 from bot.database import get_tables
 from bot.exceptions import EmptyQuery
 from bot.handlers.services import next_week_birthdays, today_birthdays
 from bot.utils import send_message
-from bot.constants.constants import RUN_SCHEDULER_HOURS
 
 SCHEDULER_NAME = 'Birthdays check at {}'
 
