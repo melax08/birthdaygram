@@ -5,9 +5,9 @@ from telegram.ext import CommandHandler, ContextTypes, MessageHandler, filters
 
 from bot.constants.buttons import HELP_BUTTON, MAIN_BUTTONS
 from bot.constants.commands import COMMANDS
+from bot.constants.logging_messages import START_BOT_LOG
 from bot.constants.messages import (MENU_MESSAGE, START_MESSAGE,
                                     TEXT_ANSWER_MESSAGE)
-from bot.constants.logging_messages import START_BOT_LOG
 from bot.utils import get_user_info
 
 

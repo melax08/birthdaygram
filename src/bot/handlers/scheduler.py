@@ -4,16 +4,14 @@ import logging
 from telegram.ext import ContextTypes, JobQueue
 
 from bot.constants.constants import RUN_SCHEDULER_HOURS
+from bot.constants.logging_messages import (SCHEDULER_FINISH_LOG,
+                                            SCHEDULER_NEXT_WEEK_BIRTHDAYS_LOG,
+                                            SCHEDULER_START_LOG,
+                                            SCHEDULER_TODAY_BIRTHDAYS_LOG)
 from bot.database import get_tables
 from bot.exceptions import EmptyQuery
 from bot.handlers.services import next_week_birthdays, today_birthdays
 from bot.utils import send_message
-from bot.constants.logging_messages import (
-    SCHEDULER_START_LOG,
-    SCHEDULER_FINISH_LOG,
-    SCHEDULER_TODAY_BIRTHDAYS_LOG,
-    SCHEDULER_NEXT_WEEK_BIRTHDAYS_LOG
-)
 
 SCHEDULER_NAME = 'Birthdays check at {}'
 

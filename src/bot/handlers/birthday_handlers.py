@@ -5,12 +5,11 @@ from telegram.ext import ContextTypes, MessageHandler, filters
 
 from bot.constants.buttons import (ALL_BUTTON, MAIN_BUTTONS, MONTH_BUTTON,
                                    TODAY_BUTTON, WEEK_BUTTON)
+from bot.constants.logging_messages import (SEND_ALL_RECORDS_LOG,
+                                            SEND_NEXT_INTERVAL_BIRTHDAYS_LOG,
+                                            SEND_TODAY_BIRTHDAYS_LOG)
 from bot.exceptions import EmptyQuery
 from bot.utils import get_user_info
-from bot.constants.logging_messages import (SEND_ALL_RECORDS_LOG,
-                                            SEND_TODAY_BIRTHDAYS_LOG,
-                                            SEND_NEXT_INTERVAL_BIRTHDAYS_LOG,
-                                            )
 
 from .services import next_birthdays, show_all, today_birthdays
 

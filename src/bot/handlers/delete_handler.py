@@ -6,10 +6,10 @@ from telegram.ext import (CommandHandler, ContextTypes, ConversationHandler,
 
 from bot.constants.buttons import DELETE_BUTTON, MAIN_BUTTONS, YES_NO_BUTTONS
 from bot.constants.constants import DATE_FORMAT
+from bot.constants.logging_messages import USER_DELETE_LOG
 from bot.constants.messages import (ACTION_CANCELED, DELETE_CONFIRMATION,
                                     PERSON_NOT_FOUND, REPEAT_MESSAGE, SUCCESS,
                                     WRITE_FULL_NAME_TO_DELETE)
-from bot.constants.logging_messages import USER_DELETE_LOG
 from bot.database import UserTable
 from bot.utils import get_user_info
 

@@ -1,10 +1,11 @@
 import datetime as dt
 
-from .constants.constants import DATE_FORMAT, FULL_NAME_MAX_LEN
-from .constants.messages import (INCORRECT_BIRTHDATE, TOO_LONG_NAME,
-                                 UNBORN_PERSON, NAME_ALREADY_EXISTS)
-from .exceptions import BirthDateError, FullNameError
 from bot.database import UserTable
+
+from .constants.constants import DATE_FORMAT, FULL_NAME_MAX_LEN
+from .constants.messages import (INCORRECT_BIRTHDATE, NAME_ALREADY_EXISTS,
+                                 TOO_LONG_NAME, UNBORN_PERSON)
+from .exceptions import BirthDateError, FullNameError
 
 
 def birth_date_validator(birth: str) -> dt:
