@@ -7,13 +7,14 @@ from bot.constants.buttons import HELP_BUTTON, MAIN_BUTTONS
 from bot.constants.commands import COMMANDS
 from bot.constants.messages import (MENU_MESSAGE, START_MESSAGE,
                                     TEXT_ANSWER_MESSAGE)
+from bot.constants.logging_messages import START_BOT_LOG
 from bot.utils import get_user_info
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start or /help is issued."""
     if update.message.text == '/start':
-        logging.info(f'Someone starts bot: {get_user_info(update)}')
+        logging.info(START_BOT_LOG.format(get_user_info(update)))
         bot_commands = await context.bot.get_my_commands()
         if not bot_commands:
             await context.bot.set_my_commands(commands=COMMANDS)

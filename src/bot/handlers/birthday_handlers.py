@@ -7,6 +7,10 @@ from bot.constants.buttons import (ALL_BUTTON, MAIN_BUTTONS, MONTH_BUTTON,
                                    TODAY_BUTTON, WEEK_BUTTON)
 from bot.exceptions import EmptyQuery
 from bot.utils import get_user_info
+from bot.constants.logging_messages import (SEND_ALL_RECORDS_LOG,
+                                            SEND_TODAY_BIRTHDAYS_LOG,
+                                            SEND_NEXT_INTERVAL_BIRTHDAYS_LOG,
+                                            )
 
 from .services import next_birthdays, show_all, today_birthdays
 
@@ -20,10 +24,9 @@ async def show_all_command(
     except EmptyQuery as error:
         message = [str(error)]
 
-    logging.info(f'Send message about all records '
-                 f'to {get_user_info(update)}. Message: {message}')
     await update.message.reply_text('\n'.join(message),
                                     reply_markup=MAIN_BUTTONS)
+    logging.info(SEND_ALL_RECORDS_LOG.format(get_user_info(update), message))
 
 
 async def today_birthdays_command(
@@ -35,10 +38,11 @@ async def today_birthdays_command(
     except EmptyQuery as error:
         message = [str(error)]
 
-    logging.info(f'Send message about today birthdays '
-                 f'to {get_user_info(update)}. Message: {message}')
     await update.message.reply_text('\n'.join(message),
                                     reply_markup=MAIN_BUTTONS)
+    logging.info(
+        SEND_TODAY_BIRTHDAYS_LOG.format(get_user_info(update), message)
+    )
 
 
 async def send_next_birthdays_message(update, interval) -> None:
@@ -49,11 +53,10 @@ async def send_next_birthdays_message(update, interval) -> None:
     except EmptyQuery as error:
         message = [str(error)]
 
-    logging.info(f'Send message about next {interval} days birthdays '
-                 f'to {get_user_info(update)}. Message: {message}')
-
     await update.message.reply_text('\n'.join(message),
                                     reply_markup=MAIN_BUTTONS)
+    logging.info(SEND_NEXT_INTERVAL_BIRTHDAYS_LOG.format(
+        interval, get_user_info(update), message))
 
 
 async def next_week_birthday_command(

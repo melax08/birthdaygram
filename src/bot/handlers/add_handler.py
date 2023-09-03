@@ -8,9 +8,11 @@ from bot.constants.buttons import ADD_BUTTON, MAIN_BUTTONS, YES_NO_BUTTONS
 from bot.constants.messages import (ADD_CONFIRMATION, CLARIFICATION,
                                     REPEAT_MESSAGE, SUCCESS, WRITE_BIRTHDATE,
                                     WRITE_FULL_NAME)
+from bot.constants.logging_messages import USER_ADD_LOG
 from bot.database import UserTable
 from bot.exceptions import BirthDateError, FullNameError
 from bot.validators import birth_date_validator, full_name_validator
+from bot.utils import get_user_info
 
 from .cancel_handler import cancel
 
@@ -20,6 +22,10 @@ FULL_NAME, BIRTHDATE, CONFIRMATION = range(3)
 async def add_command(
         update: Update, context: ContextTypes.DEFAULT_TYPE
 ) -> int:
+    """
+    Entry point of conversation handler for adding a new person to the list of
+    birthdates. Asks the user to write the full name of the person to be added.
+    """
     await update.message.reply_text(
         WRITE_FULL_NAME,
         reply_markup=ReplyKeyboardRemove()
@@ -30,10 +36,13 @@ async def add_command(
 async def _full_name(
         update: Update, context: ContextTypes.DEFAULT_TYPE
 ) -> int:
+    """Validate entered person full name and asks the user to write the
+    birthdate of the person to be added."""
     full_name = update.message.text
 
     try:
-        full_name_validator(full_name)
+        user_table = UserTable(update.effective_chat.id)
+        full_name_validator(full_name, user_table)
     except FullNameError as error:
         await update.message.reply_text(str(error))
         return FULL_NAME
@@ -47,6 +56,8 @@ async def _full_name(
 async def _birth_date(
         update: Update, context: ContextTypes.DEFAULT_TYPE
 ) -> int:
+    """Validate entered person birthdate and asks the user to confirm adding
+    a new person."""
     birth_date = update.message.text
 
     try:
@@ -68,6 +79,7 @@ async def _birth_date(
 async def _confirmation(
         update: Update, context: ContextTypes.DEFAULT_TYPE
 ) -> int:
+    """Adds a new person to the list of the user birthdates."""
     answer = update.message.text
 
     if answer.lower() == 'нет':
@@ -80,11 +92,11 @@ async def _confirmation(
             context.user_data.get("full_name"),
             context.user_data.get("birth_date")
         )
-        logging.info(
-            f'User {update.effective_user.id} '
-            f'add {context.user_data.get("full_name")} '
-            f'{context.user_data.get("birth_date")}'
-        )
+        logging.info(USER_ADD_LOG.format(
+            get_user_info(update),
+            context.user_data.get("full_name"),
+            context.user_data.get("birth_date")
+        ))
         context.user_data.clear()
         await update.message.reply_text(SUCCESS, reply_markup=MAIN_BUTTONS)
         return ConversationHandler.END
@@ -97,7 +109,6 @@ async def _confirmation(
 
 
 add_handler = ConversationHandler(
-    # entry_points=[CommandHandler("add", add_command)],
     entry_points=[MessageHandler(
         filters.Regex(ADD_BUTTON) | filters.Regex('/add'), add_command)],
     states={

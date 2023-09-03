@@ -8,6 +8,12 @@ from bot.database import get_tables
 from bot.exceptions import EmptyQuery
 from bot.handlers.services import next_week_birthdays, today_birthdays
 from bot.utils import send_message
+from bot.constants.logging_messages import (
+    SCHEDULER_START_LOG,
+    SCHEDULER_FINISH_LOG,
+    SCHEDULER_TODAY_BIRTHDAYS_LOG,
+    SCHEDULER_NEXT_WEEK_BIRTHDAYS_LOG
+)
 
 SCHEDULER_NAME = 'Birthdays check at {}'
 
@@ -18,16 +24,14 @@ async def tables_processing(tables: list) -> None:
     for chat_id in tables:
         try:
             today_message = today_birthdays(chat_id)
-            logging.info(f'User: {chat_id} has today birthdays. '
-                         f'Sending a message.')
+            logging.info(SCHEDULER_TODAY_BIRTHDAYS_LOG.format(chat_id))
             await send_message('\n'.join(today_message), chat_id)
         except EmptyQuery:
             pass
 
         try:
             week_message = next_week_birthdays(chat_id)
-            logging.info(f'User: {chat_id} has next week birthdays. '
-                         f'Sending a message.')
+            logging.info(SCHEDULER_NEXT_WEEK_BIRTHDAYS_LOG.format(chat_id))
             await send_message('\n'.join(week_message), chat_id)
         except EmptyQuery:
             pass
@@ -49,7 +53,7 @@ def set_scheduler(job_queue: JobQueue) -> None:
 async def scheduler_callback(context: ContextTypes) -> None:
     """Gets the list of user tables and check every table for today
     and next week birthdays."""
-    logging.info('Started birthday reminder scheduler')
+    logging.info(SCHEDULER_START_LOG)
     tables = get_tables()
     await tables_processing(tables)
-    logging.info('Finished birthday reminder scheduler')
+    logging.info(SCHEDULER_FINISH_LOG)

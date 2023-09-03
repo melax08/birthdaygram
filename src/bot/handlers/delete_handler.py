@@ -9,7 +9,9 @@ from bot.constants.constants import DATE_FORMAT
 from bot.constants.messages import (ACTION_CANCELED, DELETE_CONFIRMATION,
                                     PERSON_NOT_FOUND, REPEAT_MESSAGE, SUCCESS,
                                     WRITE_FULL_NAME_TO_DELETE)
+from bot.constants.logging_messages import USER_DELETE_LOG
 from bot.database import UserTable
+from bot.utils import get_user_info
 
 from .cancel_handler import cancel
 
@@ -19,6 +21,11 @@ FULL_NAME, CONFIRMATION = range(2)
 async def delete_command(
         update: Update, context: ContextTypes.DEFAULT_TYPE
 ) -> int:
+    """
+    Entry point of conversation handler for deleting the person from the list
+    of birthdates. Asks the user to write the full name of the person to be
+    deleted.
+    """
     await update.message.reply_text(
         WRITE_FULL_NAME_TO_DELETE,
         reply_markup=ReplyKeyboardRemove()
@@ -27,7 +34,10 @@ async def delete_command(
 
 
 async def _full_name(
-        update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+        update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
+    """Checks if a person with the entered full name exists.
+    Asks for confirmation."""
     full_name = update.message.text
     user_table = UserTable(update.effective_chat.id)
     person = user_table.select_person(full_name)
@@ -47,7 +57,9 @@ async def _full_name(
 
 
 async def _confirmation(
-        update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+        update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> int:
+    """Deletes the person from the user birthdate list."""
     answer = update.message.text
     if answer.lower() == 'нет':
         context.user_data.clear()
@@ -57,9 +69,9 @@ async def _confirmation(
     elif answer.lower() == 'да':
         user_table = UserTable(update.effective_chat.id)
         user_table.delete_person(context.user_data.get("person_to_delete"))
-        logging.info(
-            f'User {update.effective_user.id} '
-            f'delete {context.user_data.get("person_to_delete")}'
+        logging.info(USER_DELETE_LOG.format(
+            get_user_info(update),
+            context.user_data.get("person_to_delete"))
         )
         context.user_data.clear()
         await update.message.reply_text(SUCCESS,

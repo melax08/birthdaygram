@@ -23,3 +23,6 @@ def configure_logging(log_file_name: str) -> None:
         level=logging.INFO,
         handlers=(rotating_handler, logging.StreamHandler())
     )
+
+    # Disable information logs from telegram API itself requests.
+    logging.getLogger("httpx").setLevel(logging.WARNING)
