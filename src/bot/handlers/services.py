@@ -12,10 +12,10 @@ from bot.exceptions import EmptyQuery
 from bot.utils import birthdate_processing, create_persons_info_list
 
 
-def show_all(chat_id: int) -> List[str]:
+async def show_all(chat_id: int) -> List[str]:
     """Logic of `show all` button."""
-    user_table = UserTable(chat_id)
-    records = user_table.show_all()
+    user_table = await UserTable.get_user_table(chat_id)
+    records = await user_table.show_all()
     count = len(records)
 
     if not count:
@@ -27,10 +27,10 @@ def show_all(chat_id: int) -> List[str]:
     return message
 
 
-def today_birthdays(chat_id: int) -> List[str]:
+async def today_birthdays(chat_id: int) -> List[str]:
     """Logic of showing today birthdays functional."""
-    user_table = UserTable(chat_id)
-    records = user_table.today_birthdays()
+    user_table = await UserTable.get_user_table(chat_id)
+    records = await user_table.today_birthdays()
 
     if not len(records):
         raise EmptyQuery(NO_BIRTHDAYS_TODAY)
@@ -45,10 +45,10 @@ def today_birthdays(chat_id: int) -> List[str]:
     return message
 
 
-def next_week_birthdays(chat_id: int) -> List[str]:
+async def next_week_birthdays(chat_id: int) -> List[str]:
     """Logic of showing birthdays in 7 days."""
-    user_table = UserTable(chat_id)
-    records = user_table.next_week_birthdays()
+    user_table = await UserTable.get_user_table(chat_id)
+    records = await user_table.next_week_birthdays()
 
     if not len(records):
         raise EmptyQuery
@@ -63,10 +63,10 @@ def next_week_birthdays(chat_id: int) -> List[str]:
     return message
 
 
-def next_birthdays(chat_id: int, interval: int) -> List[str]:
+async def next_birthdays(chat_id: int, interval: int) -> List[str]:
     """Logic of showing birthdays in interval from now to `interval`."""
-    user_table = UserTable(chat_id)
-    records = user_table.next_days_interval_birthdays(interval)
+    user_table = await UserTable.get_user_table(chat_id)
+    records = await user_table.next_days_interval_birthdays(interval)
 
     if not len(records):
         raise EmptyQuery(INTERVAL_NO_BIRTHDAYS.format(interval))

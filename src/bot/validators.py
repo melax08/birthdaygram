@@ -24,7 +24,7 @@ def birth_date_validator(birth: str) -> dt:
     return birth_date
 
 
-def full_name_validator(full_name: str, user_table: UserTable) -> None:
+async def full_name_validator(full_name: str, user_table: UserTable) -> None:
     """
     Validate full name.
     Full name len must be > than `FULL_NAME_MAX_LEN` and must be unique.
@@ -34,6 +34,6 @@ def full_name_validator(full_name: str, user_table: UserTable) -> None:
             TOO_LONG_NAME.format(len(full_name), FULL_NAME_MAX_LEN)
         )
 
-    user_in_db = user_table.select_person(full_name)
+    user_in_db = await user_table.select_person(full_name)
     if user_in_db is not None:
         raise FullNameError(NAME_ALREADY_EXISTS)

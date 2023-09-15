@@ -41,8 +41,8 @@ async def _full_name(
     full_name = update.message.text
 
     try:
-        user_table = UserTable(update.effective_chat.id)
-        full_name_validator(full_name, user_table)
+        user_table = await UserTable.get_user_table(update.effective_chat.id)
+        await full_name_validator(full_name, user_table)
     except FullNameError as error:
         await update.message.reply_text(str(error))
         return FULL_NAME
@@ -87,8 +87,8 @@ async def _confirmation(
         await update.message.reply_text(REPEAT_MESSAGE)
         return FULL_NAME
     elif answer.lower() == 'да':
-        user_table = UserTable(update.effective_chat.id)
-        user_table.add_person(
+        user_table = await UserTable.get_user_table(update.effective_chat.id)
+        await user_table.add_person(
             context.user_data.get("full_name"),
             context.user_data.get("birth_date")
         )

@@ -22,6 +22,7 @@ db_host: str = os.getenv("DB_HOST", default='db')
 db_port: str = os.getenv("DB_PORT", default='5432')
 db_name: str = os.getenv("DB_NAME", default='birthdaygram')
 SQL_SETTINGS: str = (
-    f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
+    f'postgresql+asyncpg:'
+    f'//{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
 )
 ECHO: int = int(os.getenv('ECHO', default=0))

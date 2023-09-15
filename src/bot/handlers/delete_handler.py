@@ -39,8 +39,8 @@ async def _full_name(
     """Checks if a person with the entered full name exists.
     Asks for confirmation."""
     full_name = update.message.text
-    user_table = UserTable(update.effective_chat.id)
-    person = user_table.select_person(full_name)
+    user_table = await UserTable.get_user_table(update.effective_chat.id)
+    person = await user_table.select_person(full_name)
     if not person:
         await update.message.reply_text(PERSON_NOT_FOUND)
         return FULL_NAME
@@ -67,8 +67,9 @@ async def _confirmation(
                                         reply_markup=MAIN_BUTTONS)
         return ConversationHandler.END
     elif answer.lower() == 'да':
-        user_table = UserTable(update.effective_chat.id)
-        user_table.delete_person(context.user_data.get("person_to_delete"))
+        user_table = await UserTable.get_user_table(update.effective_chat.id)
+        await user_table.delete_person(context.user_data.get(
+            "person_to_delete"))
         logging.info(USER_DELETE_LOG.format(
             get_user_info(update),
             context.user_data.get("person_to_delete"))

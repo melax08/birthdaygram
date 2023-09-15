@@ -8,7 +8,7 @@
 
 ### Description
 
-This project contains a telegram bot interface to easily manage the birthdays of your family, friends and acquaintances.
+This project contains a asynchronous telegram bot interface to easily manage the birthdays of your family, friends and acquaintances.
 
 ### Features
 
@@ -16,7 +16,8 @@ This project contains a telegram bot interface to easily manage the birthdays of
 - Easy add or remove persons to your personal list.
 - View your entire personal list of people.
 - Ability to see who has a birthday today, within a week or within a month.
-- A scheduler that will run at the specified time then the bot starts checking all users for the presence of people whose birthday is today and exactly 7 days later, after which it sends a message with a reminder of this
+- A scheduler that will run at the specified time then the bot starts checking all users for the presence of people whose birthday is today and exactly 7 days later, after which it sends a message with a reminder of this.
+- Fully asynchronous.
 
 ![bot_example.png](readme_imgs/bot_example.png)
 

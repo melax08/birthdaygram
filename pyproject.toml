@@ -12,6 +12,8 @@ python-dotenv = "0.21.1"
 python-telegram-bot = {extras = ["job-queue"], version = "^20.4"}
 sqlalchemy = "2.0.20"
 psycopg2-binary = "2.9.7"
+asyncpg = "^0.28.0"
+greenlet = "^2.0.2"
 
 
 [tool.poetry.group.dev.dependencies]

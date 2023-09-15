@@ -19,7 +19,7 @@ async def show_all_command(
 ) -> None:
     """Send a message with all records in database."""
     try:
-        message = show_all(update.effective_chat.id)
+        message = await show_all(update.effective_chat.id)
     except EmptyQuery as error:
         message = [str(error)]
 
@@ -33,7 +33,7 @@ async def today_birthdays_command(
 ) -> None:
     """Sends a message with today birthdays."""
     try:
-        message = today_birthdays(update.effective_chat.id)
+        message = await today_birthdays(update.effective_chat.id)
     except EmptyQuery as error:
         message = [str(error)]
 
@@ -48,7 +48,7 @@ async def send_next_birthdays_message(update, interval) -> None:
     """Gets DB records for selected interval,
     sends telegram message for user about birthdays in this interval."""
     try:
-        message = next_birthdays(update.effective_chat.id, interval)
+        message = await next_birthdays(update.effective_chat.id, interval)
     except EmptyQuery as error:
         message = [str(error)]
 
