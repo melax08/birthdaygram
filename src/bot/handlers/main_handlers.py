@@ -5,9 +5,9 @@ from telegram.ext import CommandHandler, ContextTypes, MessageHandler, filters
 
 from bot.constants.buttons import HELP_BUTTON, MAIN_BUTTONS
 from bot.constants.commands import COMMANDS
-from bot.constants.logging_messages import START_BOT_LOG
-from bot.constants.messages import (MENU_MESSAGE, START_MESSAGE,
-                                    TEXT_ANSWER_MESSAGE)
+from bot.constants.logging_messages import EXCEPTION_LOG, START_BOT_LOG
+from bot.constants.messages import (INTERNAL_ERROR, MENU_MESSAGE,
+                                    START_MESSAGE, TEXT_ANSWER_MESSAGE)
 from bot.utils import get_user_info
 
 
@@ -46,6 +46,18 @@ async def text_answer(
     await update.message.reply_text(
         TEXT_ANSWER_MESSAGE,
         reply_markup=MAIN_BUTTONS
+    )
+
+
+async def error_handler(
+        update: Update, context: ContextTypes.DEFAULT_TYPE
+) -> None:
+    """Log the error and send a telegram message to notify the current user
+    about the problem."""
+    logging.error(EXCEPTION_LOG, exc_info=context.error)
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id,
+        text=INTERNAL_ERROR
     )
 
 

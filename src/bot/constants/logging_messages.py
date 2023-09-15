@@ -14,6 +14,7 @@ USER_DELETE_LOG = 'The user {} removed a person {} from his list of birthdays.'
 
 START_BOT_LOG = 'Someone starts the bot: {}'
 
+EXCEPTION_LOG = 'Exception while handling an update:'
 
 # Scheduler log messages
 SCHEDULER_START_LOG = 'Started birthday reminder scheduler'
