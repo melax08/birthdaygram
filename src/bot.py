@@ -3,11 +3,19 @@ from telegram.ext import Application, Defaults
 
 from bot.constants.constants import BIRTHDAYGRAM_LOG_NAME, BOT_TIMEZONE, TOKEN
 from bot.handlers.add_handler import add_handler
-from bot.handlers.birthday_handlers import (month_handler, show_all_handler,
-                                            today_handler, week_handler)
+from bot.handlers.birthday_handlers import (
+    month_handler,
+    show_all_handler,
+    today_handler,
+    week_handler,
+)
 from bot.handlers.delete_handler import delete_handler
-from bot.handlers.main_handlers import (error_handler, menu_handler,
-                                        start_handler, text_handler)
+from bot.handlers.main_handlers import (
+    error_handler,
+    menu_handler,
+    start_handler,
+    text_handler,
+)
 from bot.handlers.scheduler import set_scheduler
 from logger import configure_logging
 

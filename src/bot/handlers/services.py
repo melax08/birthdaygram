@@ -1,12 +1,16 @@
 from typing import List
 
-from bot.constants.messages import (EMPTY_TABLE_MESSAGE,
-                                    INTERVAL_BIRTHDAY_LABEL,
-                                    INTERVAL_NO_BIRTHDAYS, LIST_PERSONS_LABEL,
-                                    NEXT_WEEK_BIRTHDAY_LABEL,
-                                    NO_BIRTHDAYS_TODAY, PERSON_BIRTHDAY,
-                                    PERSON_NEXT_BIRTHDAY,
-                                    TODAY_BIRTHDAYS_LABEL)
+from bot.constants.messages import (
+    EMPTY_TABLE_MESSAGE,
+    INTERVAL_BIRTHDAY_LABEL,
+    INTERVAL_NO_BIRTHDAYS,
+    LIST_PERSONS_LABEL,
+    NEXT_WEEK_BIRTHDAY_LABEL,
+    NO_BIRTHDAYS_TODAY,
+    PERSON_BIRTHDAY,
+    PERSON_NEXT_BIRTHDAY,
+    TODAY_BIRTHDAYS_LABEL,
+)
 from bot.database import UserTable
 from bot.exceptions import EmptyQuery
 from bot.utils import birthdate_processing, create_persons_info_list
@@ -38,9 +42,7 @@ async def today_birthdays(chat_id: int) -> List[str]:
     message = [TODAY_BIRTHDAYS_LABEL]
     for record in records:
         birthdate, age = birthdate_processing(record.birth_date)
-        message.append(
-            PERSON_BIRTHDAY.format(record.full_name, age, birthdate)
-        )
+        message.append(PERSON_BIRTHDAY.format(record.full_name, age, birthdate))
 
     return message
 

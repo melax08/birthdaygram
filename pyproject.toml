@@ -22,6 +22,9 @@ black = "^23.7.0"
 pre-commit = "^3.3.3"
 flake8 = "^6.1.0"
 
+[tool.isort]
+profile = "black"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

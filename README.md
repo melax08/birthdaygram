@@ -1,4 +1,5 @@
 ![birthdaygram workflow](https://github.com/melax08/birthdaygram/actions/workflows/birthdaygram-workflow.yml/badge.svg)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 # Birthdaygram - telegram bot for birthday reminders
 
@@ -8,11 +9,11 @@
 
 ### Description
 
-This project contains a asynchronous telegram bot interface to easily manage the birthdays of your family, friends and acquaintances.
+This project contains an asynchronous telegram bot interface to easily manage the birthdays of your family, friends and acquaintances.
 
 ### Features
 
-- All telegram users who use the bot has their own database table and can manage only their own list by the telegram bot interface. 
+- All telegram users who use the bot has their own database table and can manage only their own list by the telegram bot interface.
 - Easy add or remove persons to your personal list.
 - View your entire personal list of people.
 - Ability to see who has a birthday today, within a week or within a month.
@@ -49,35 +50,30 @@ git clone https://github.com/melax08/birthdaygram.git
 cd birthdaygram
 ```
 
-Create an `.env` file in the `src` directory and add the necessary environment variables to it (check `src/.env.example` for necessary variables.)
+Copy file `.env.example` to `.env` and fill it in
 ```shell
-mv src/.env.example src/.env
-```
-```shell
-vi src/.env
+cp .env.example .env
+nano .env
 ```
 
 Run `docker compose` to create needed containers:
 ```shell
 docker compose up -d
 ```
-or
-```shell
-docker-compose up -d
-```
 
 </details>
 
-<details>
-<summary>
-Without docker
-</summary>
+<details><summary>Without docker</summary>
+
+<br>
+
 There is no information yet.
+
 </details>
 
 ## Settings and documentation
 
-All bot constants you can find in `src/bot/constants/constants.py`. 
+All bot constants you can find in `src/bot/constants/constants.py`.
 Some of them you can set in `.env` file (see example in `.env.example` file).
 
 <details>
@@ -95,12 +91,20 @@ Example:
 RUN_SCHEDULER_HOURS=12 18
 ```
 
-The scheduler tasks will be added to the queue when the bot starts. 
+The scheduler tasks will be added to the queue when the bot starts.
 In this example, the scheduler will run at 12:00 (12:00 AM) and 18:00 (6:00 PM)
 
 If you set `RUN_SCHEDULER_HOURS` to the empty value (`RUN_SCHEDULER_HOURS=`), the scheduler will not work.
 
 </details>
+
+### For developers
+
+Use `pre-commit` to automatic application of `black`, `isort`, `flake8` and other pre-commit hooks.
+
+```shell
+pre-commit install
+```
 
 <!-- MARKDOWN LINKS & BADGES -->
 [Python-url]: https://www.python.org/

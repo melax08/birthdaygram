@@ -8,8 +8,5 @@ from bot.constants.messages import ACTION_CANCELED
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Cancels and ends the conversation."""
     context.user_data.clear()
-    await update.message.reply_text(
-        ACTION_CANCELED,
-        reply_markup=MAIN_BUTTONS
-    )
+    await update.message.reply_text(ACTION_CANCELED, reply_markup=MAIN_BUTTONS)
     return ConversationHandler.END

@@ -37,4 +37,4 @@ def create_persons_info_list(data: list) -> list:
 def get_user_info(update: Update) -> str:
     """Creates a string with information about the current telegram user."""
     user = update.effective_user
-    return f'{user.username}, {user.first_name} {user.last_name}, {user.id}'
+    return f"{user.username}, {user.first_name} {user.last_name}, {user.id}"

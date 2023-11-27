@@ -3,8 +3,12 @@ import datetime as dt
 from bot.database import UserTable
 
 from .constants.constants import DATE_FORMAT, FULL_NAME_MAX_LEN
-from .constants.messages import (INCORRECT_BIRTHDATE, NAME_ALREADY_EXISTS,
-                                 TOO_LONG_NAME, UNBORN_PERSON)
+from .constants.messages import (
+    INCORRECT_BIRTHDATE,
+    NAME_ALREADY_EXISTS,
+    TOO_LONG_NAME,
+    UNBORN_PERSON,
+)
 from .exceptions import BirthDateError, FullNameError
 
 
@@ -16,10 +20,15 @@ def birth_date_validator(birth: str) -> dt:
     except ValueError:
         raise BirthDateError(INCORRECT_BIRTHDATE)
     now = dt.datetime.now()
-    if ((birth_date.year > now.year)
-            or (birth_date.year == now.year and birth_date.month > now.month)
-            or (birth_date.year == now.year and birth_date.month == now.month
-                and birth_date.day > now.day)):
+    if (
+        (birth_date.year > now.year)
+        or (birth_date.year == now.year and birth_date.month > now.month)
+        or (
+            birth_date.year == now.year
+            and birth_date.month == now.month
+            and birth_date.day > now.day
+        )
+    ):
         raise BirthDateError(UNBORN_PERSON)
     return birth_date
 
@@ -30,9 +39,7 @@ async def full_name_validator(full_name: str, user_table: UserTable) -> None:
     Full name len must be > than `FULL_NAME_MAX_LEN` and must be unique.
     """
     if len(full_name) > FULL_NAME_MAX_LEN:
-        raise FullNameError(
-            TOO_LONG_NAME.format(len(full_name), FULL_NAME_MAX_LEN)
-        )
+        raise FullNameError(TOO_LONG_NAME.format(len(full_name), FULL_NAME_MAX_LEN))
 
     user_in_db = await user_table.select_person(full_name)
     if user_in_db is not None:

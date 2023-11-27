@@ -1,8 +1,17 @@
 import datetime as dt
 from contextlib import asynccontextmanager
 
-from sqlalchemy import (Column, Date, Integer, Interval, String, and_, func,
-                        inspect, select)
+from sqlalchemy import (
+    Column,
+    Date,
+    Integer,
+    Interval,
+    String,
+    and_,
+    func,
+    inspect,
+    select,
+)
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import declarative_base, declared_attr, sessionmaker
 from sqlalchemy.sql.expression import extract
@@ -13,20 +22,21 @@ from .constants.constants import ECHO, FULL_NAME_MAX_LEN, SQL_SETTINGS
 class PreBase:
     """Base class for user model. Name of the table is user telegram id,
     every user has its own table."""
-    chat_id = 'default_table'
+
+    chat_id = "default_table"
 
     @declared_attr
     def __tablename__(cls):
         return cls.chat_id
 
-    __table_args__ = {'extend_existing': True}
+    __table_args__ = {"extend_existing": True}
 
     id = Column(Integer, primary_key=True)
     full_name = Column(String(FULL_NAME_MAX_LEN))
     birth_date = Column(Date)
 
     def __repr__(self):
-        return f'{self.full_name} - {self.birth_date}'
+        return f"{self.full_name} - {self.birth_date}"
 
 
 Base = declarative_base(cls=PreBase)
@@ -35,12 +45,14 @@ engine = create_async_engine(SQL_SETTINGS, echo=ECHO)
 
 class UserTable:
     """Class for handle user table DB queries."""
+
     def __init__(self, chat_id):
         self.chat_id = chat_id
 
     async def get_session_and_table(self) -> None:
         """Opens DB session and get current user model.
         If the user model doesn't exist, creates it."""
+
         class User(Base):
             chat_id = self.chat_id
 
@@ -67,7 +79,7 @@ class UserTable:
             all_birthdays = await session.execute(
                 select(self.user_table).order_by(
                     extract("month", self.user_table.birth_date),
-                    extract("day", self.user_table.birth_date)
+                    extract("day", self.user_table.birth_date),
                 )
             )
 
@@ -84,9 +96,7 @@ class UserTable:
         """Selects the record from DB with specified full_name."""
         async with self._get_async_session() as session:
             person = await session.execute(
-                select(self.user_table).where(
-                    self.user_table.full_name == name
-                )
+                select(self.user_table).where(self.user_table.full_name == name)
             )
 
         return person.scalars().first()
@@ -101,11 +111,14 @@ class UserTable:
         """Selects persons with birthday in specified date."""
         async with self._get_async_session() as session:
             birthdays = await session.execute(
-                select(self.user_table).where(and_(
-                    func.cast(extract("month", self.user_table.birth_date),
-                              Integer) == date.month),
-                    func.cast(extract("day", self.user_table.birth_date),
-                              Integer) == date.day)
+                select(self.user_table).where(
+                    and_(
+                        func.cast(extract("month", self.user_table.birth_date), Integer)
+                        == date.month
+                    ),
+                    func.cast(extract("day", self.user_table.birth_date), Integer)
+                    == date.day,
+                )
             )
 
         return birthdays.scalars().all()
@@ -116,9 +129,7 @@ class UserTable:
 
     async def next_week_birthdays(self):
         """Makes DB query to get all user records with birthdays in 7 days."""
-        return await self._birthdays_in_date(
-            dt.date.today() + dt.timedelta(days=7)
-        )
+        return await self._birthdays_in_date(dt.date.today() + dt.timedelta(days=7))
 
     @staticmethod
     def age_years_at(sa_col, next_days: int = 0):
@@ -150,10 +161,9 @@ class UserTable:
         with anniversary in specified next days."""
         async with self._get_async_session() as session:
             birthdays = await session.execute(
-                select(
-                    self.user_table
-                ).where(self.has_birthday_next_days(
-                    self.user_table.birth_date, days))
+                select(self.user_table).where(
+                    self.has_birthday_next_days(self.user_table.birth_date, days)
+                )
             )
 
         return birthdays.scalars().all()

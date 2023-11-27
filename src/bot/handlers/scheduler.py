@@ -5,16 +5,18 @@ import logging
 from telegram.ext import ContextTypes, JobQueue
 
 from bot.constants.constants import RUN_SCHEDULER_HOURS
-from bot.constants.logging_messages import (SCHEDULER_FINISH_LOG,
-                                            SCHEDULER_NEXT_WEEK_BIRTHDAYS_LOG,
-                                            SCHEDULER_START_LOG,
-                                            SCHEDULER_TODAY_BIRTHDAYS_LOG)
+from bot.constants.logging_messages import (
+    SCHEDULER_FINISH_LOG,
+    SCHEDULER_NEXT_WEEK_BIRTHDAYS_LOG,
+    SCHEDULER_START_LOG,
+    SCHEDULER_TODAY_BIRTHDAYS_LOG,
+)
 from bot.database import UserTable
 from bot.exceptions import EmptyQuery
 from bot.handlers.services import next_week_birthdays, today_birthdays
 from bot.utils import send_message
 
-SCHEDULER_NAME = 'Birthdays check at {}'
+SCHEDULER_NAME = "Birthdays check at {}"
 
 
 async def _check_birthdays_task(chat_id):
@@ -23,14 +25,14 @@ async def _check_birthdays_task(chat_id):
     try:
         today_message = await today_birthdays(chat_id)
         logging.info(SCHEDULER_TODAY_BIRTHDAYS_LOG.format(chat_id))
-        await send_message('\n'.join(today_message), chat_id)
+        await send_message("\n".join(today_message), chat_id)
     except EmptyQuery:
         pass
 
     try:
         week_message = await next_week_birthdays(chat_id)
         logging.info(SCHEDULER_NEXT_WEEK_BIRTHDAYS_LOG.format(chat_id))
-        await send_message('\n'.join(week_message), chat_id)
+        await send_message("\n".join(week_message), chat_id)
     except EmptyQuery:
         pass
 
@@ -38,8 +40,9 @@ async def _check_birthdays_task(chat_id):
 async def tables_processing(tables: list) -> None:
     """Main coroutine. Creates tasks to check all tables in database for
     today and next week birthdays."""
-    tasks = [asyncio.ensure_future(_check_birthdays_task(chat_id))
-             for chat_id in tables]
+    tasks = [
+        asyncio.ensure_future(_check_birthdays_task(chat_id)) for chat_id in tables
+    ]
     await asyncio.wait(tasks)
 
 

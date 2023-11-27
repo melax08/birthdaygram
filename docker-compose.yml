@@ -2,12 +2,12 @@ version: '3.8'
 
 services:
   birthdaygram_db:
-    image: postgres:13.0-alpine
+    image: postgres:16-bookworm
     restart: always
     volumes:
       - birthdaygram_database:/var/lib/postgresql/data/
     env_file:
-      - src/.env
+      - ./.env
     environment:
       - TZ=Europe/Moscow
   birthdaygram_bot:
@@ -18,7 +18,7 @@ services:
     depends_on:
       - birthdaygram_db
     env_file:
-      - src/.env
+      - ./.env
     environment:
       - TZ=Europe/Moscow
 
