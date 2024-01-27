@@ -1,8 +1,10 @@
 import datetime as dt
 
+import pytz
+
 from bot.database import UserTable
 
-from .constants.constants import DATE_FORMAT, FULL_NAME_MAX_LEN
+from .constants.constants import BOT_TIMEZONE, DATE_FORMAT, FULL_NAME_MAX_LEN
 from .constants.messages import (
     INCORRECT_BIRTHDATE,
     NAME_ALREADY_EXISTS,
@@ -12,24 +14,17 @@ from .constants.messages import (
 from .exceptions import BirthDateError, FullNameError
 
 
-def birth_date_validator(birth: str) -> dt:
+def birth_date_validator(birth: str) -> dt.date:
     """Validate is birthdate specified correct.
-    Returns datetime object of this date."""
+    Returns `datetime.date` object of this date."""
     try:
-        birth_date = dt.datetime.strptime(birth, DATE_FORMAT)
+        birth_date = dt.datetime.strptime(birth, DATE_FORMAT).date()
     except ValueError:
         raise BirthDateError(INCORRECT_BIRTHDATE)
-    now = dt.datetime.now()
-    if (
-        (birth_date.year > now.year)
-        or (birth_date.year == now.year and birth_date.month > now.month)
-        or (
-            birth_date.year == now.year
-            and birth_date.month == now.month
-            and birth_date.day > now.day
-        )
-    ):
+
+    if birth_date > dt.datetime.now(pytz.timezone(BOT_TIMEZONE)).date():
         raise BirthDateError(UNBORN_PERSON)
+
     return birth_date
 
 

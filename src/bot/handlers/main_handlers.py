@@ -45,9 +45,10 @@ async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     """Log the error and send a telegram message to notify the current user
     about the problem."""
     logging.error(EXCEPTION_LOG, exc_info=context.error)
-    await context.bot.send_message(
-        chat_id=update.effective_chat.id, text=INTERNAL_ERROR
-    )
+    if update is not None:
+        await context.bot.send_message(
+            chat_id=update.effective_chat.id, text=INTERNAL_ERROR
+        )
 
 
 start_handler = MessageHandler(

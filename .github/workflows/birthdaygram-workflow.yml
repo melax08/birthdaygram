@@ -58,7 +58,7 @@ jobs:
             TOKEN=${{ secrets.BOT_TG_TOKEN }}
             # Additional bot settings
             RUN_SCHEDULER_HOURS=12 18
-            BOT_TIMEZONE=Europe/Moscow
+            TZ=Europe/Moscow
             # DB settings
             DB_NAME=${{ secrets.DB_NAME }}
             POSTGRES_USER=${{ secrets.POSTGRES_USER }}

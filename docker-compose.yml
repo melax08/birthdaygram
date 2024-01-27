@@ -8,8 +8,7 @@ services:
       - birthdaygram_database:/var/lib/postgresql/data/
     env_file:
       - ./.env
-    environment:
-      - TZ=Europe/Moscow
+
   birthdaygram_bot:
     build: ./
     restart: always
@@ -19,8 +18,6 @@ services:
       - birthdaygram_db
     env_file:
       - ./.env
-    environment:
-      - TZ=Europe/Moscow
 
 volumes:
   birthdaygram_database:

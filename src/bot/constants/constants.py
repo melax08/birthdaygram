@@ -9,7 +9,7 @@ BIRTHDAYGRAM_LOG_NAME: str = "birthdaygram.log"
 
 DATE_FORMAT: str = "%d.%m.%Y"
 
-BOT_TIMEZONE: str = os.getenv("BOT_TIMEZONE", default="Europe/Moscow")
+BOT_TIMEZONE: str = os.getenv("TZ", default="Europe/Moscow")
 
 RUN_SCHEDULER_HOURS: tuple = tuple(
     map(int, (os.getenv("RUN_SCHEDULER_HOURS", default="12 6").split()))
