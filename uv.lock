@@ -77,7 +77,7 @@ requires-dist = [
     { name = "psycopg2-binary", specifier = "==2.9.12" },
     { name = "python-dotenv", specifier = "==1.2.2" },
     { name = "python-telegram-bot", extras = ["job-queue"], specifier = "==22.7" },
-    { name = "pytz", specifier = ">=2026.1.post1" },
+    { name = "pytz", specifier = "==2026.1.post1" },
     { name = "sqlalchemy", specifier = "==2.0.49" },
 ]
 
