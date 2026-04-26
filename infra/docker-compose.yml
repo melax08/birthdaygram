@@ -1,0 +1,26 @@
+name: birthdaygram
+
+services:
+  database:
+    image: postgres:18.3-alpine
+    restart: always
+    volumes:
+      - database:/var/lib/postgresql/
+    env_file:
+      - ../.env
+
+  bot:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+    restart: always
+    volumes:
+      - ./logs/:/app/logs/
+    depends_on:
+      - database
+    env_file:
+      - ../.env
+    entrypoint: infra/entrypoint_bot.sh
+
+volumes:
+  database:

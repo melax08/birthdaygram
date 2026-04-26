@@ -19,8 +19,8 @@ def birth_date_validator(birth: str) -> dt.date:
     Returns `datetime.date` object of this date."""
     try:
         birth_date = dt.datetime.strptime(birth, DATE_FORMAT).date()
-    except ValueError:
-        raise BirthDateError(INCORRECT_BIRTHDATE)
+    except ValueError as error:
+        raise BirthDateError(INCORRECT_BIRTHDATE) from error
 
     if birth_date > dt.datetime.now(pytz.timezone(BOT_TIMEZONE)).date():
         raise BirthDateError(UNBORN_PERSON)

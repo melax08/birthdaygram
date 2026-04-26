@@ -46,9 +46,7 @@ async def error_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     about the problem."""
     logging.error(EXCEPTION_LOG, exc_info=context.error)
     if update is not None:
-        await context.bot.send_message(
-            chat_id=update.effective_chat.id, text=INTERNAL_ERROR
-        )
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=INTERNAL_ERROR)
 
 
 start_handler = MessageHandler(

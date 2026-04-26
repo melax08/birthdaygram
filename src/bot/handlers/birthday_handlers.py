@@ -32,9 +32,7 @@ async def show_all_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     logging.info(SEND_ALL_RECORDS_LOG.format(get_user_info(update), message))
 
 
-async def today_birthdays_command(
-    update: Update, context: ContextTypes.DEFAULT_TYPE
-) -> None:
+async def today_birthdays_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends a message with today birthdays."""
     try:
         message = await today_birthdays(update.effective_chat.id)
@@ -54,23 +52,15 @@ async def send_next_birthdays_message(update, interval) -> None:
         message = [str(error)]
 
     await update.message.reply_text("\n".join(message), reply_markup=MAIN_BUTTONS)
-    logging.info(
-        SEND_NEXT_INTERVAL_BIRTHDAYS_LOG.format(
-            interval, get_user_info(update), message
-        )
-    )
+    logging.info(SEND_NEXT_INTERVAL_BIRTHDAYS_LOG.format(interval, get_user_info(update), message))
 
 
-async def next_week_birthday_command(
-    update: Update, context: ContextTypes.DEFAULT_TYPE
-) -> None:
+async def next_week_birthday_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends a message with birthdays in next 7-days."""
     await send_next_birthdays_message(update, 7)
 
 
-async def next_month_birthdays_command(
-    update: Update, context: ContextTypes.DEFAULT_TYPE
-) -> None:
+async def next_month_birthdays_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Sends a message with birthdays in next 30-days."""
     await send_next_birthdays_message(update, 30)
 

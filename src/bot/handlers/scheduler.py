@@ -40,9 +40,7 @@ async def _check_birthdays_task(chat_id):
 async def tables_processing(tables: list) -> None:
     """Main coroutine. Creates tasks to check all tables in database for
     today and next week birthdays."""
-    tasks = [
-        asyncio.ensure_future(_check_birthdays_task(chat_id)) for chat_id in tables
-    ]
+    tasks = [asyncio.ensure_future(_check_birthdays_task(chat_id)) for chat_id in tables]
     await asyncio.wait(tasks)
 
 

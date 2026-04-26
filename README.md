@@ -1,5 +1,6 @@
 ![birthdaygram workflow](https://github.com/melax08/birthdaygram/actions/workflows/birthdaygram-workflow.yml/badge.svg)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 # Birthdaygram - telegram bot for birthday reminders
 
@@ -26,15 +27,16 @@ This project contains an asynchronous telegram bot interface to easily manage th
 Ilya Malashenko (github: melax08)
 
 ### System requirements
-- Python 3.11;
-- Docker (19.03.0+) with docker compose for easy run.
+- Python 3.14;
+- Docker (20.10+) with docker compose for easy run;
+- [uv](https://docs.astral.sh/uv/).
 
 ### Tech stack
 [![Python][Python-badge]][Python-url]
-[![Poetry][Poetry-badge]][Poetry-url]
 [![Python-telegram-bot][Python-telegram-bot-badge]][Python-telegram-bot-url]
 [![Postgres][Postgres-badge]][Postgres-url]
 [![SQLAlchemy][SQLAlchemy-badge]][SQLAlchemy-url]
+[![uv][uv-badge]][uv-url]
 
 ## Installation and start
 <details>
@@ -58,16 +60,8 @@ nano .env
 
 Run `docker compose` to create needed containers:
 ```shell
-docker compose up -d
+docker compose -f infra/docker-compose.yml up -d
 ```
-
-</details>
-
-<details><summary>Without docker</summary>
-
-<br>
-
-There is no information yet.
 
 </details>
 
@@ -100,7 +94,7 @@ If you set `RUN_SCHEDULER_HOURS` to the empty value (`RUN_SCHEDULER_HOURS=`), th
 
 ### For developers
 
-Use `pre-commit` to automatic application of `black`, `isort`, `flake8` and other pre-commit hooks.
+Use `pre-commit` to automatic application of `ruff` and other pre-commit hooks.
 
 ```shell
 pre-commit install
@@ -110,8 +104,8 @@ pre-commit install
 [Python-url]: https://www.python.org/
 [Python-badge]: https://img.shields.io/badge/Python-376f9f?style=for-the-badge&logo=python&logoColor=white
 [Python-telegram-bot-url]: https://github.com/python-telegram-bot/python-telegram-bot
-[Poetry-url]: https://python-poetry.org
-[Poetry-badge]: https://img.shields.io/badge/poetry-blue?style=for-the-badge&logo=Poetry&logoColor=white&link=https%3A%2F%2Fpython-poetry.org
+[uv-badge]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json
+[uv-url]: https://docs.astral.sh/uv/
 [Python-telegram-bot-badge]: https://img.shields.io/badge/python--telegram--bot-4b8bbe?style=for-the-badge
 [Postgres-url]: https://www.postgresql.org/
 [Postgres-badge]: https://img.shields.io/badge/postgres-306189?style=for-the-badge&logo=postgresql&logoColor=white

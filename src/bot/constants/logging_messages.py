@@ -18,6 +18,4 @@ EXCEPTION_LOG = "Exception while handling an update:"
 SCHEDULER_START_LOG = "Started birthday reminder scheduler"
 SCHEDULER_FINISH_LOG = "Finished birthday reminder scheduler"
 SCHEDULER_TODAY_BIRTHDAYS_LOG = "User: {} has today birthdays. Sending a message."
-SCHEDULER_NEXT_WEEK_BIRTHDAYS_LOG = (
-    "User: {} has next week birthdays. Sending a message."
-)
+SCHEDULER_NEXT_WEEK_BIRTHDAYS_LOG = "User: {} has next week birthdays. Sending a message."

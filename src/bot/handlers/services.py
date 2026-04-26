@@ -1,5 +1,3 @@
-from typing import List
-
 from bot.constants.messages import (
     EMPTY_TABLE_MESSAGE,
     INTERVAL_BIRTHDAY_LABEL,
@@ -16,7 +14,7 @@ from bot.exceptions import EmptyQuery
 from bot.utils import birthdate_processing, create_persons_info_list
 
 
-async def show_all(chat_id: int) -> List[str]:
+async def show_all(chat_id: int) -> list[str]:
     """Logic of `show all` button."""
     user_table = await UserTable.get_user_table(chat_id)
     records = await user_table.show_all()
@@ -31,7 +29,7 @@ async def show_all(chat_id: int) -> List[str]:
     return message
 
 
-async def today_birthdays(chat_id: int) -> List[str]:
+async def today_birthdays(chat_id: int) -> list[str]:
     """Logic of showing today birthdays functional."""
     user_table = await UserTable.get_user_table(chat_id)
     records = await user_table.today_birthdays()
@@ -47,7 +45,7 @@ async def today_birthdays(chat_id: int) -> List[str]:
     return message
 
 
-async def next_week_birthdays(chat_id: int) -> List[str]:
+async def next_week_birthdays(chat_id: int) -> list[str]:
     """Logic of showing birthdays in 7 days."""
     user_table = await UserTable.get_user_table(chat_id)
     records = await user_table.next_week_birthdays()
@@ -58,14 +56,12 @@ async def next_week_birthdays(chat_id: int) -> List[str]:
     message = [NEXT_WEEK_BIRTHDAY_LABEL]
     for record in records:
         birthdate, age = birthdate_processing(record.birth_date)
-        message.append(
-            PERSON_NEXT_BIRTHDAY.format(record.full_name, age + 1, birthdate)
-        )
+        message.append(PERSON_NEXT_BIRTHDAY.format(record.full_name, age + 1, birthdate))
 
     return message
 
 
-async def next_birthdays(chat_id: int, interval: int) -> List[str]:
+async def next_birthdays(chat_id: int, interval: int) -> list[str]:
     """Logic of showing birthdays in interval from now to `interval`."""
     user_table = await UserTable.get_user_table(chat_id)
     records = await user_table.next_days_interval_birthdays(interval)
@@ -77,8 +73,6 @@ async def next_birthdays(chat_id: int, interval: int) -> List[str]:
 
     for record in records:
         birthdate, age = birthdate_processing(record.birth_date)
-        message.append(
-            PERSON_NEXT_BIRTHDAY.format(record.full_name, age + 1, birthdate)
-        )
+        message.append(PERSON_NEXT_BIRTHDAY.format(record.full_name, age + 1, birthdate))
 
     return message

@@ -116,8 +116,7 @@ class UserTable:
                         func.cast(extract("month", self.user_table.birth_date), Integer)
                         == date.month
                     ),
-                    func.cast(extract("day", self.user_table.birth_date), Integer)
-                    == date.day,
+                    func.cast(extract("day", self.user_table.birth_date), Integer) == date.day,
                 )
             )
 
@@ -139,9 +138,7 @@ class UserTable:
         or with the `next_days` offset.
         """
         statement = func.age(
-            (sa_col - func.cast(dt.timedelta(next_days), Interval))
-            if next_days != 0
-            else sa_col
+            (sa_col - func.cast(dt.timedelta(next_days), Interval)) if next_days != 0 else sa_col
         )
         return func.date_part("year", statement)
 
@@ -172,9 +169,7 @@ class UserTable:
     async def get_table_names():
         """Makes DB query to get all database tables names."""
         async with engine.connect() as conn:
-            tables = await conn.run_sync(
-                lambda sync_conn: inspect(sync_conn).get_table_names()
-            )
+            tables = await conn.run_sync(lambda sync_conn: inspect(sync_conn).get_table_names())
         return tables
 
     @classmethod

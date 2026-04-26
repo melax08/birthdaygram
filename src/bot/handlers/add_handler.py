@@ -105,9 +105,7 @@ async def _confirmation(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
 
 
 add_handler = ConversationHandler(
-    entry_points=[
-        MessageHandler(filters.Regex(ADD_BUTTON) | filters.Regex("/add"), add_command)
-    ],
+    entry_points=[MessageHandler(filters.Regex(ADD_BUTTON) | filters.Regex("/add"), add_command)],
     states={
         FULL_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, _full_name)],
         BIRTHDATE: [MessageHandler(filters.TEXT & ~filters.COMMAND, _birth_date)],
